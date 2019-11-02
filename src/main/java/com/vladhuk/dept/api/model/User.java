@@ -3,6 +3,7 @@ package com.vladhuk.dept.api.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Set;
 })
 @Data
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class User extends DateAudit {
 
     @Id

@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity(name = "groups")
+@Entity(name = "groups_")
 @Data
 public class Group {
 

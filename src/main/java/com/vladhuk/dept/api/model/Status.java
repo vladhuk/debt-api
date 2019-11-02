@@ -15,7 +15,7 @@ public class Status {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    private StatusName statusName;
+    private StatusName name;
 
     public enum StatusName {
         SENT, VIEWED, REJECTED, CONFIRMED

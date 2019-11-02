@@ -16,7 +16,7 @@ create table status
 (
 	id bigint not null
 		primary key,
-	status_name varchar(255) null
+	name varchar(255) null
 )
 ;
 

@@ -1,25 +1,27 @@
 package com.vladhuk.dept.api.model;
 
-import com.vladhuk.dept.api.util.Status;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
-@Entity(name = "[order]")
+@Entity
+@Table(name = "orders")
 @Data
 public class Order {
 
     @Id
     @GeneratedValue
     private Long id;
+
+    private Float amount;
+
+    @OneToOne
+    private Status status;
+
     @ManyToOne
     private User sender;
+
     @ManyToOne
     private User receiver;
-    private Float amount;
-    private Status status;
 
 }

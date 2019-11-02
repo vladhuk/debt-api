@@ -12,9 +12,15 @@ public class Group {
     @Id
     @GeneratedValue
     private Long id;
+
     private String title;
+
     @ManyToOne
     private User owner;
+
     @OneToMany
+    @JoinTable(name = "group_members",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> members;
 }

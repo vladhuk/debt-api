@@ -46,7 +46,7 @@ public class AuthController {
         authenticationService.registerUser(newUser);
 
         final String jwt = authenticationService.authenticateAndGetToken(
-                signUpRequest.getUsername(), signUpRequest.getPassword()
+                newUser.getUsername(), newUser.getPassword()
         );
 
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));

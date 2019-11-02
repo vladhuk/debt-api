@@ -48,14 +48,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public User registerUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        final User newUser = new User();
+        newUser.setName(user.getName());
+        newUser.setUsername(user.getUsername());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         final Role userRole = roleRepository.findByName(Role.RoleName.USER)
                 .orElseThrow(() -> new AppException("User Role not set."));
 
-        user.setRoles(Collections.singleton(userRole));
+        newUser.setRoles(Collections.singleton(userRole));
 
-        return userRepository.save(user);
+        return userRepository.save(newUser);
     }
 
     @Override

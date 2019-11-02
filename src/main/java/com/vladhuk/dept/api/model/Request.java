@@ -1,11 +1,13 @@
 package com.vladhuk.dept.api.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
 @MappedSuperclass
 @Data
+@EqualsAndHashCode(callSuper = true)
 public abstract class Request extends DateAudit {
 
     @Id

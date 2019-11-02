@@ -1,12 +1,14 @@
 package com.vladhuk.dept.api.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "debts")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class Debt extends DateAudit {
 
     @Id

@@ -2,6 +2,7 @@ package com.vladhuk.dept.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Set;
         })
 })
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class User extends DateAudit {
 
     @Id

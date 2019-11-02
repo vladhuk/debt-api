@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity(name = "[group]")
+@Entity(name = "groups")
 @Data
 public class Group {
 
@@ -19,7 +19,7 @@ public class Group {
     private User owner;
 
     @OneToMany
-    @JoinTable(name = "group_members",
+    @JoinTable(name = "groups_members",
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> members;

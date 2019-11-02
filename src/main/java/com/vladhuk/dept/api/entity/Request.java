@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.vladhuk.dept.api.util.Status;
 import lombok.Data;
 
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
@@ -13,7 +15,9 @@ import java.time.LocalDateTime;
 public abstract class Request {
 
     @Id
+    @GeneratedValue
     private Long id;
+    @ManyToOne
     private User sender;
     private String comment;
     private Status status;

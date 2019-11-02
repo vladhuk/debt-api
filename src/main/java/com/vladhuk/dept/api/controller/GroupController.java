@@ -5,9 +5,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/user-management/groups")
 public class GroupController {
 
-    @GetMapping("/groups")
+    @GetMapping
     public List<Group> getGroups(@RequestParam(value = "page", required = false) Integer pageNumber,
                                  @RequestParam(value = "size", required = false) Integer pageSize) {
         return null;

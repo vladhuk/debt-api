@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/debts")
+@RequestMapping("/user-management/debts")
 public class DebtController {
 
     @GetMapping

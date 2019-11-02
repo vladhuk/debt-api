@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/friends")
+@RequestMapping("/user-management//friends")
 public class FriendsController {
 
     @GetMapping

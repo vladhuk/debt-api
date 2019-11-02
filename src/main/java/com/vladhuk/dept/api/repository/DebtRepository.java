@@ -1,6 +1,6 @@
 package com.vladhuk.dept.api.repository;
 
-import com.vladhuk.dept.api.entity.Debt;
+import com.vladhuk.dept.api.model.Debt;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

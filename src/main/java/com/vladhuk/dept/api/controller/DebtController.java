@@ -1,6 +1,6 @@
 package com.vladhuk.dept.api.controller;
 
-import com.vladhuk.dept.api.entity.Debt;
+import com.vladhuk.dept.api.model.Debt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

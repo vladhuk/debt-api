@@ -1,6 +1,6 @@
 package com.vladhuk.dept.api.controller;
 
-import com.vladhuk.dept.api.entity.Group;
+import com.vladhuk.dept.api.model.Group;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

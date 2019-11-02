@@ -1,4 +1,4 @@
-package com.vladhuk.dept.api.entity;
+package com.vladhuk.dept.api.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.vladhuk.dept.api.util.Status;

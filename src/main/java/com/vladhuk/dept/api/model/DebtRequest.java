@@ -1,4 +1,4 @@
-package com.vladhuk.dept.api.entity;
+package com.vladhuk.dept.api.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

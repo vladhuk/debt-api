@@ -1,4 +1,4 @@
-package com.vladhuk.dept.api.entity;
+package com.vladhuk.dept.api.model;
 
 import com.vladhuk.dept.api.util.Status;
 import lombok.Data;

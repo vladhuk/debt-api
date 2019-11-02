@@ -1,6 +1,6 @@
 package com.vladhuk.dept.api.repository;
 
-import com.vladhuk.dept.api.entity.Group;
+import com.vladhuk.dept.api.model.Group;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

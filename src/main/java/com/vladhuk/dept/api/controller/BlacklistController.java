@@ -1,6 +1,6 @@
 package com.vladhuk.dept.api.controller;
 
-import com.vladhuk.dept.api.entity.User;
+import com.vladhuk.dept.api.model.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

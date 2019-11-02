@@ -15,7 +15,7 @@ public class Role {
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
-    private RoleName roleName;
+    private RoleName role;
 
     public enum RoleName {
         USER

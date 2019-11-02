@@ -10,7 +10,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
-                "email"
+                "username"
         })
 })
 @Data
@@ -20,7 +20,7 @@ public class User extends DateAudit {
     @GeneratedValue
     private Long id;
     private String name;
-    private String email;
+    private String username;
 
     @JsonIgnore
     private String password;

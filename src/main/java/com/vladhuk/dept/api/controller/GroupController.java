@@ -1,6 +1,8 @@
 package com.vladhuk.dept.api.controller;
 
 import com.vladhuk.dept.api.model.Group;
+import com.vladhuk.dept.api.model.User;
+import com.vladhuk.dept.api.service.GroupService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,24 +11,48 @@ import java.util.List;
 @RequestMapping("/user-management/groups")
 public class GroupController {
 
+    private GroupService groupService;
+
+    public GroupController(GroupService groupService) {
+        this.groupService = groupService;
+    }
+
     @GetMapping
-    public List<Group> getGroups(@RequestParam(value = "page", required = false) Integer pageNumber,
-                                 @RequestParam(value = "size", required = false) Integer pageSize) {
-        return null;
+    public List<Group> getGroups(@RequestParam(value = "page", required = false, defaultValue = "0")
+                                         Integer pageNumber,
+                                 @RequestParam(value = "size", required = false, defaultValue = "9999")
+                                         Integer pageSize) {
+        return groupService.getGroups(pageNumber, pageSize);
+    }
+
+    @GetMapping("/{id}")
+    public Group getGroup(@PathVariable Long id) {
+        return groupService.getGroup(id);
     }
 
     @PostMapping
     public Group createGroup(@RequestBody Group group) {
-        return null;
+        return groupService.createGroup(group);
     }
 
     @DeleteMapping("/{id}")
     public void deleteGroup(@PathVariable("id") Long groupId) {
+        groupService.deleteGroup(groupId);
     }
 
     @PutMapping
     public Group updateGroup(@RequestBody Group group) {
-        return null;
+        return groupService.updateGroup(group);
+    }
+
+    @PostMapping("/groups/{id}/members")
+    public Group addMembers(@PathVariable Long id, @RequestBody User member) {
+        return groupService.addMember(id, member);
+    }
+
+    @DeleteMapping("/groups/{groupId}/members/{memberId}")
+    public Group deleteMember(@PathVariable Long groupId, @PathVariable Long memberId) {
+        return groupService.deleteMember(groupId, memberId);
     }
 
 }

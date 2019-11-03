@@ -23,11 +23,6 @@ public class FriendController {
                                          Integer pageNumber,
                                  @RequestParam(value = "size", required = false, defaultValue = "9999")
                                          Integer pageSize) {
-        if (pageNumber == null) {
-            pageNumber = 0;
-            pageSize = Integer.MAX_VALUE;
-        }
-
         return userService.getFriends(pageNumber, pageSize);
     }
 

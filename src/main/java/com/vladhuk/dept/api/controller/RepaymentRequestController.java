@@ -8,11 +8,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user-management/repayment-requests")
-public class RepaymentRequestsController {
+public class RepaymentRequestController {
 
     private DebtService debtService;
 
-    public RepaymentRequestsController(DebtService debtService) {
+    public RepaymentRequestController(DebtService debtService) {
         this.debtService = debtService;
     }
 

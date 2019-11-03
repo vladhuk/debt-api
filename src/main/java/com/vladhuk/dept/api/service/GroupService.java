@@ -1,0 +1,24 @@
+package com.vladhuk.dept.api.service;
+
+import com.vladhuk.dept.api.model.Group;
+import com.vladhuk.dept.api.model.User;
+
+import java.util.List;
+
+public interface GroupService {
+
+    List<Group> getGroups(Integer pageNumber, Integer pageSize);
+
+    Group getGroup(Long groupId);
+
+    Group createGroup(Group group);
+
+    void deleteGroup(Long groupId);
+
+    Group updateGroup(Group group);
+
+    Group addMember(Long groupId, User member);
+
+    Group deleteMember(Long groupId, Long memberId);
+
+}

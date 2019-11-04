@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user-management/repayment-requests")
+@RequestMapping("/debt-management/repayment-requests")
 public class RepaymentRequestController {
 
     private RepaymentRequestService repaymentRequestService;

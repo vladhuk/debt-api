@@ -24,7 +24,7 @@ public class DebtController {
         return debtService.getAllDebts();
     }
 
-    @GetMapping
+    @GetMapping(params = {"page", "size"})
     public List<Debt> getDebtsPage(@RequestParam(value = "page") Integer pageNumber,
                                    @RequestParam(value = "size") Integer pageSize) {
         return debtService.getDebtsPage(pageNumber, pageSize);

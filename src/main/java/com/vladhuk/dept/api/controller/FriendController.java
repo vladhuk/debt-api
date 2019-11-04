@@ -23,7 +23,7 @@ public class FriendController {
         return friendService.getAllFriends();
     }
 
-    @GetMapping
+    @GetMapping(params = {"page", "size"})
     public List<User> getFriendsPage(@RequestParam(value = "page") Integer pageNumber,
                                      @RequestParam(value = "size") Integer pageSize) {
         return friendService.getFriendsPage(pageNumber, pageSize);

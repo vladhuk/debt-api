@@ -21,7 +21,7 @@ public class DebtRequestController {
         return debtRequestService.getAllSentDebtRequests();
     }
 
-    @GetMapping("/sent")
+    @GetMapping(value = "/sent", params = {"page", "size"})
     public List<DebtRequest> getSentDebtRequestsPage(@RequestParam(value = "page") Integer pageNumber,
                                                      @RequestParam(value = "size") Integer pageSize) {
         return debtRequestService.getSentDebtRequestsPage(pageNumber, pageSize);
@@ -32,7 +32,7 @@ public class DebtRequestController {
         return debtRequestService.getAllReceivedDebtRequests();
     }
 
-    @GetMapping("/received")
+    @GetMapping(value = "/received", params = {"page", "size"})
     public List<DebtRequest> getReceivedDebtRequestsPage(@RequestParam(value = "page") Integer pageNumber,
                                                          @RequestParam(value = "size") Integer pageSize) {
         return debtRequestService.getReceivedDebtRequestsPage(pageNumber, pageSize);

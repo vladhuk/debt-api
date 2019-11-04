@@ -21,7 +21,7 @@ public class BlacklistController {
         return blacklistService.getFullBlacklist();
     }
 
-    @GetMapping
+    @GetMapping(params = {"page", "size"})
     public List<User> getBlacklistPage(@RequestParam(value = "page") Integer pageNumber,
                                        @RequestParam(value = "size") Integer pageSize) {
         return blacklistService.getBlacklistPage(pageNumber, pageSize);

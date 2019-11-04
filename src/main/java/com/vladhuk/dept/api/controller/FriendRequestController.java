@@ -21,7 +21,7 @@ public class FriendRequestController {
         return friendRequestService.getAllSentFriendRequests();
     }
 
-    @GetMapping("/sent")
+    @GetMapping(value = "/sent", params = {"page", "size"})
     public List<FriendRequest> getSentFriendRequestsPage(@RequestParam(value = "page") Integer pageNumber,
                                                          @RequestParam(value = "size") Integer pageSize) {
         return friendRequestService.getSentFriendRequestsPage(pageNumber, pageSize);
@@ -32,7 +32,7 @@ public class FriendRequestController {
         return friendRequestService.getAllReceivedFriendRequests();
     }
 
-    @GetMapping("/received")
+    @GetMapping(value = "/received", params = {"page", "size"})
     public List<FriendRequest> getReceivedFriendRequestsPage(@RequestParam(value = "page") Integer pageNumber,
                                                              @RequestParam(value = "size") Integer pageSize) {
         return friendRequestService.getReceivedFriendRequestsPage(pageNumber, pageSize);

@@ -22,7 +22,7 @@ public class GroupController {
         return groupService.getAllGroups();
     }
 
-    @GetMapping
+    @GetMapping(params = {"page", "size"})
     public List<Group> getGroupsPage(@RequestParam(value = "page") Integer pageNumber,
                                      @RequestParam(value = "size") Integer pageSize) {
         return groupService.getGroupsPage(pageNumber, pageSize);

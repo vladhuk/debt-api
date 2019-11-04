@@ -17,19 +17,25 @@ public class FriendRequestController {
     }
 
     @GetMapping("/sent")
-    public List<FriendRequest> getSentFriendRequests(@RequestParam(value = "page", required = false, defaultValue = "0")
-                                                             Integer pageNumber,
-                                                     @RequestParam(value = "size", required = false, defaultValue = "9999")
-                                                             Integer pageSize) {
-        return userService.getSentFriendRequests(pageNumber, pageSize);
+    public List<FriendRequest> getAllSentFriendRequests() {
+        return userService.getAllSentFriendRequests();
+    }
+
+    @GetMapping("/sent")
+    public List<FriendRequest> getSentFriendRequestsPage(@RequestParam(value = "page") Integer pageNumber,
+                                                         @RequestParam(value = "size") Integer pageSize) {
+        return userService.getSentFriendRequestsPage(pageNumber, pageSize);
     }
 
     @GetMapping("/received")
-    public List<FriendRequest> getReceivedFriendRequests(@RequestParam(value = "page", required = false, defaultValue = "0")
-                                                                 Integer pageNumber,
-                                                         @RequestParam(value = "size", required = false, defaultValue = "9999")
-                                                                 Integer pageSize) {
-        return userService.getReceivedFriendRequests(pageNumber, pageSize);
+    public List<FriendRequest> getAllReceivedFriendRequests() {
+        return userService.getAllReceivedFriendRequests();
+    }
+
+    @GetMapping("/received")
+    public List<FriendRequest> getReceivedFriendRequestsPage(@RequestParam(value = "page") Integer pageNumber,
+                                                             @RequestParam(value = "size") Integer pageSize) {
+        return userService.getReceivedFriendRequestsPage(pageNumber, pageSize);
     }
 
     @PostMapping

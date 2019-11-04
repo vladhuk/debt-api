@@ -11,45 +11,80 @@ import java.util.List;
 @Service
 public class DebtServiceImp implements DebtService {
     @Override
-    public List<Debt> getDebts(Integer pageNumber, Integer pageSize) {
+    public List<Debt> getAllDebts() {
         return null;
     }
+
     @Override
-    public List<DebtRequest> getSentDebtRequests(Integer pageNumber, Integer pageSize) {
+    public List<Debt> getDebtsPage(Integer pageNumber, Integer pageSize) {
         return null;
     }
+
     @Override
-    public List<DebtRequest> getReceivedDebtRequests(Integer pageNumber, Integer pageSize) {
+    public List<DebtRequest> getAllSentDebtRequests() {
         return null;
     }
+
+    @Override
+    public List<DebtRequest> getSentDebtRequestsPage(Integer pageNumber, Integer pageSize) {
+        return null;
+    }
+
+    @Override
+    public List<DebtRequest> getAllReceivedDebtRequests() {
+        return null;
+    }
+
+    @Override
+    public List<DebtRequest> getReceivedDebtRequestsPage(Integer pageNumber, Integer pageSize) {
+        return null;
+    }
+
     @Override
     public DebtRequest sendDebtRequest(DebtRequest debtRequest) {
         return null;
     }
+
     @Override
     public DebtRequest acceptDebtRequest(Long requestId) {
         return null;
     }
+
     @Override
     public DebtRequest rejectDebtRequest(Long requestId) {
         return null;
     }
+
     @Override
-    public List<RepaymentRequest> getSentRepaymentRequests(Integer pageNumber, Integer pageSize) {
+    public List<RepaymentRequest> getAllSentRepaymentRequests() {
         return null;
     }
+
     @Override
-    public List<RepaymentRequest> getReceivedRepaymentRequests(Integer pageNumber, Integer pageSize) {
+    public List<RepaymentRequest> getSentRepaymentRequestsPage(Integer pageNumber, Integer pageSize) {
         return null;
     }
+
+    @Override
+    public List<RepaymentRequest> getAllReceivedRepaymentRequests() {
+        return null;
+    }
+
+    @Override
+    public List<RepaymentRequest> getReceivedRepaymentRequestsPage(Integer pageNumber, Integer pageSize) {
+        return null;
+    }
+
     @Override
     public RepaymentRequest sendRepaymentRequest(RepaymentRequest repaymentRequest) {
         return null;
     }
+
     @Override
     public RepaymentRequest acceptRepaymentRequest(Long requestId) {
         return null;
     }
+
     @Override
     public RepaymentRequest rejectRepaymentRequest(Long requestId) {
         return null;

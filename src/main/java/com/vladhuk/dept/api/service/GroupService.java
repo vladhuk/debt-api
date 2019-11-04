@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface GroupService {
 
-    List<Group> getGroups(Integer pageNumber, Integer pageSize);
+    List<Group> getAllGroups();
+
+    List<Group> getGroupsPage(Integer pageNumber, Integer pageSize);
 
     Group getGroup(Long groupId);
 

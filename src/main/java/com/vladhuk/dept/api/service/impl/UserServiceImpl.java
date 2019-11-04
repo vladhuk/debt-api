@@ -10,41 +10,70 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     @Override
-    public List<User> getFriends(Integer pageNumber, Integer pageSize) {
+    public List<User> getAllFriends() {
         return null;
     }
+
+    @Override
+    public List<User> getFriendsPage(Integer pageNumber, Integer pageSize) {
+        return null;
+    }
+
     @Override
     public Boolean deleteFriend(Long friendId) {
         return null;
     }
+
     @Override
-    public List<FriendRequest> getSentFriendRequests(Integer pageNumber, Integer pageSize) {
+    public List<FriendRequest> getAllSentFriendRequests() {
         return null;
     }
+
     @Override
-    public List<FriendRequest> getReceivedFriendRequests(Integer pageNumber, Integer pageSize) {
+    public List<FriendRequest> getSentFriendRequestsPage(Integer pageNumber, Integer pageSize) {
         return null;
     }
+
+    @Override
+    public List<FriendRequest> getAllReceivedFriendRequests() {
+        return null;
+    }
+
+    @Override
+    public List<FriendRequest> getReceivedFriendRequestsPage(Integer pageNumber, Integer pageSize) {
+        return null;
+    }
+
     @Override
     public FriendRequest sendFriendRequest(FriendRequest friendRequest) {
         return null;
     }
+
     @Override
     public FriendRequest acceptFriendRequest(Long requestId) {
         return null;
     }
+
     @Override
     public FriendRequest rejectFriendRequest(Long requestId) {
         return null;
     }
+
     @Override
-    public List<User> getBlacklist(Integer pageNumber, Integer pageSize) {
+    public List<User> getFullBlacklist() {
         return null;
     }
+
+    @Override
+    public List<User> getBlacklistPage(Integer pageNumber, Integer pageSize) {
+        return null;
+    }
+
     @Override
     public List<User> addUserToBlacklist(User user) {
         return null;
     }
+
     @Override
     public void deleteUserFromBlacklist(Long userId) {
 

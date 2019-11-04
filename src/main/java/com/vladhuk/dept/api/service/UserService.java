@@ -7,13 +7,19 @@ import java.util.List;
 
 public interface UserService {
 
-    List<User> getFriends(Integer pageNumber, Integer pageSize);
+    List<User> getAllFriends();
+
+    List<User> getFriendsPage(Integer pageNumber, Integer pageSize);
 
     Boolean deleteFriend(Long friendId);
 
-    List<FriendRequest> getSentFriendRequests(Integer pageNumber, Integer pageSize);
+    List<FriendRequest> getAllSentFriendRequests();
 
-    List<FriendRequest> getReceivedFriendRequests(Integer pageNumber, Integer pageSize);
+    List<FriendRequest> getSentFriendRequestsPage(Integer pageNumber, Integer pageSize);
+
+    List<FriendRequest> getAllReceivedFriendRequests();
+
+    List<FriendRequest> getReceivedFriendRequestsPage(Integer pageNumber, Integer pageSize);
 
     FriendRequest sendFriendRequest(FriendRequest friendRequest);
 
@@ -21,7 +27,9 @@ public interface UserService {
 
     FriendRequest rejectFriendRequest(Long requestId);
 
-    List<User> getBlacklist(Integer pageNumber, Integer pageSize);
+    List<User> getFullBlacklist();
+
+    List<User> getBlacklistPage(Integer pageNumber, Integer pageSize);
 
     List<User> addUserToBlacklist(User user);
 

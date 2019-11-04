@@ -17,11 +17,14 @@ public class BlacklistController {
     }
 
     @GetMapping
-    public List<User> getBlacklist(@RequestParam(value = "page", required = false, defaultValue = "0")
-                                           Integer pageNumber,
-                                   @RequestParam(value = "size", required = false, defaultValue = "9999")
-                                           Integer pageSize) {
-        return userService.getBlacklist(pageNumber, pageSize);
+    public List<User> getFullBlackList() {
+        return userService.getFullBlacklist();
+    }
+
+    @GetMapping
+    public List<User> getBlacklistPage(@RequestParam(value = "page") Integer pageNumber,
+                                       @RequestParam(value = "size") Integer pageSize) {
+        return userService.getBlacklistPage(pageNumber, pageSize);
     }
 
     @PostMapping

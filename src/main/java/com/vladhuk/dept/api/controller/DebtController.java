@@ -20,11 +20,14 @@ public class DebtController {
     }
 
     @GetMapping
-    public List<Debt> getDebts(@RequestParam(value = "page", required = false, defaultValue = "0")
-                                       Integer pageNumber,
-                               @RequestParam(value = "size", required = false, defaultValue = "9999")
-                                       Integer pageSize) {
-        return debtService.getDebts(pageNumber, pageSize);
+    public List<Debt> getAllDebts() {
+        return debtService.getAllDebts();
+    }
+
+    @GetMapping
+    public List<Debt> getDebtsPage(@RequestParam(value = "page") Integer pageNumber,
+                                   @RequestParam(value = "size") Integer pageSize) {
+        return debtService.getDebtsPage(pageNumber, pageSize);
     }
 
 }

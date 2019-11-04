@@ -8,11 +8,17 @@ import java.util.List;
 
 public interface DebtService {
 
-    List<Debt> getDebts(Integer pageNumber, Integer pageSize);
+    List<Debt> getAllDebts();
 
-    List<DebtRequest> getSentDebtRequests(Integer pageNumber, Integer pageSize);
+    List<Debt> getDebtsPage(Integer pageNumber, Integer pageSize);
 
-    List<DebtRequest> getReceivedDebtRequests(Integer pageNumber, Integer pageSize);
+    List<DebtRequest> getAllSentDebtRequests();
+
+    List<DebtRequest> getSentDebtRequestsPage(Integer pageNumber, Integer pageSize);
+
+    List<DebtRequest> getAllReceivedDebtRequests();
+
+    List<DebtRequest> getReceivedDebtRequestsPage(Integer pageNumber, Integer pageSize);
 
     DebtRequest sendDebtRequest(DebtRequest debtRequest);
 
@@ -20,9 +26,13 @@ public interface DebtService {
 
     DebtRequest rejectDebtRequest(Long requestId);
 
-    List<RepaymentRequest> getSentRepaymentRequests(Integer pageNumber, Integer pageSize);
+    List<RepaymentRequest> getAllSentRepaymentRequests();
 
-    List<RepaymentRequest> getReceivedRepaymentRequests(Integer pageNumber, Integer pageSize);
+    List<RepaymentRequest> getSentRepaymentRequestsPage(Integer pageNumber, Integer pageSize);
+
+    List<RepaymentRequest> getAllReceivedRepaymentRequests();
+
+    List<RepaymentRequest> getReceivedRepaymentRequestsPage(Integer pageNumber, Integer pageSize);
 
     RepaymentRequest sendRepaymentRequest(RepaymentRequest repaymentRequest);
 

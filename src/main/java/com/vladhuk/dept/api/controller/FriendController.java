@@ -19,11 +19,14 @@ public class FriendController {
     }
 
     @GetMapping
-    public List<User> getFriends(@RequestParam(value = "page", required = false, defaultValue = "0")
-                                         Integer pageNumber,
-                                 @RequestParam(value = "size", required = false, defaultValue = "9999")
-                                         Integer pageSize) {
-        return userService.getFriends(pageNumber, pageSize);
+    public List<User> getAllFriends() {
+        return userService.getAllFriends();
+    }
+
+    @GetMapping
+    public List<User> getFriendsPage(@RequestParam(value = "page") Integer pageNumber,
+                                     @RequestParam(value = "size") Integer pageSize) {
+        return userService.getFriendsPage(pageNumber, pageSize);
     }
 
     @DeleteMapping("/{id}")

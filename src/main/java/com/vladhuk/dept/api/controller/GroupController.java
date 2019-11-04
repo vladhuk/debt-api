@@ -18,11 +18,14 @@ public class GroupController {
     }
 
     @GetMapping
-    public List<Group> getGroups(@RequestParam(value = "page", required = false, defaultValue = "0")
-                                         Integer pageNumber,
-                                 @RequestParam(value = "size", required = false, defaultValue = "9999")
-                                         Integer pageSize) {
-        return groupService.getGroups(pageNumber, pageSize);
+    public List<Group> getAllGroups() {
+        return groupService.getAllGroups();
+    }
+
+    @GetMapping
+    public List<Group> getGroupsPage(@RequestParam(value = "page") Integer pageNumber,
+                                     @RequestParam(value = "size") Integer pageSize) {
+        return groupService.getGroupsPage(pageNumber, pageSize);
     }
 
     @GetMapping("/{id}")

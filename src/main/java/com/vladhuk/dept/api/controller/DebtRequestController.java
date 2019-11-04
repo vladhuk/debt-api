@@ -17,19 +17,25 @@ public class DebtRequestController {
     }
 
     @GetMapping("/sent")
-    public List<DebtRequest> getSentDebtRequests(@RequestParam(value = "page", required = false, defaultValue = "0")
-                                                         Integer pageNumber,
-                                                 @RequestParam(value = "size", required = false, defaultValue = "9999")
-                                                         Integer pageSize) {
-        return debtService.getSentDebtRequests(pageNumber, pageSize);
+    public List<DebtRequest> getAllSentDebtRequests() {
+        return debtService.getAllSentDebtRequests();
+    }
+
+    @GetMapping("/sent")
+    public List<DebtRequest> getSentDebtRequestsPage(@RequestParam(value = "page") Integer pageNumber,
+                                                     @RequestParam(value = "size") Integer pageSize) {
+        return debtService.getSentDebtRequestsPage(pageNumber, pageSize);
     }
 
     @GetMapping("/received")
-    public List<DebtRequest> getReceivedDebtRequests(@RequestParam(value = "page", required = false, defaultValue = "0")
-                                                             Integer pageNumber,
-                                                     @RequestParam(value = "size", required = false, defaultValue = "9999")
-                                                             Integer pageSize) {
-        return debtService.getReceivedDebtRequests(pageNumber, pageSize);
+    public List<DebtRequest> getAllReceivedDebtRequests() {
+        return debtService.getAllReceivedDebtRequests();
+    }
+
+    @GetMapping("/received")
+    public List<DebtRequest> getReceivedDebtRequestsPage(@RequestParam(value = "page") Integer pageNumber,
+                                                         @RequestParam(value = "size") Integer pageSize) {
+        return debtService.getReceivedDebtRequestsPage(pageNumber, pageSize);
     }
 
     @PostMapping

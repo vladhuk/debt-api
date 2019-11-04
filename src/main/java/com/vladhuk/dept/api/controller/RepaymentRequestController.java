@@ -17,19 +17,25 @@ public class RepaymentRequestController {
     }
 
     @GetMapping("/sent")
-    public List<RepaymentRequest> getSentRepaymentRequests(@RequestParam(value = "page", required = false, defaultValue = "0")
-                                                                   Integer pageNumber,
-                                                           @RequestParam(value = "size", required = false, defaultValue = "9999")
-                                                                   Integer pageSize) {
-        return debtService.getSentRepaymentRequests(pageNumber, pageSize);
+    public List<RepaymentRequest> getAllSentRepaymentRequests() {
+        return debtService.getAllSentRepaymentRequests();
+    }
+
+    @GetMapping("/sent")
+    public List<RepaymentRequest> getSentRepaymentRequestsPage(@RequestParam(value = "page") Integer pageNumber,
+                                                               @RequestParam(value = "size") Integer pageSize) {
+        return debtService.getSentRepaymentRequestsPage(pageNumber, pageSize);
     }
 
     @GetMapping("/received")
-    public List<RepaymentRequest> getReceivedRepaymentRequests(@RequestParam(value = "page", required = false, defaultValue = "0")
-                                                                       Integer pageNumber,
-                                                               @RequestParam(value = "size", required = false, defaultValue = "9999")
-                                                                       Integer pageSize) {
-        return debtService.getReceivedRepaymentRequests(pageNumber, pageSize);
+    public List<RepaymentRequest> getAllReceivedRepaymentRequests() {
+        return debtService.getAllReceivedRepaymentRequests();
+    }
+
+    @GetMapping("/received")
+    public List<RepaymentRequest> getReceivedRepaymentRequestsPage(@RequestParam(value = "page") Integer pageNumber,
+                                                                   @RequestParam(value = "size") Integer pageSize) {
+        return debtService.getReceivedRepaymentRequestsPage(pageNumber, pageSize);
     }
 
     @PostMapping

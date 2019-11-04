@@ -8,7 +8,6 @@ import com.vladhuk.dept.api.payload.SignUpRequest;
 import com.vladhuk.dept.api.service.AuthenticationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -52,7 +51,7 @@ public class AuthController {
 
     @GetMapping("/logout")
     public void logout() {
-        SecurityContextHolder.clearContext();
+        authenticationService.logout();
     }
 
 }

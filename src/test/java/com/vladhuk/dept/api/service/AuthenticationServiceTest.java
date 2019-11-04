@@ -47,7 +47,7 @@ public class AuthenticationServiceTest {
         final User registeredUser = authenticationService.registerUser(testUser);
         final Optional<Role> userRole = roleRepository.findByName(USER);
 
-        if (!userRole.isPresent()) {
+        if (userRole.isEmpty()) {
             fail();
         }
 

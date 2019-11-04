@@ -67,8 +67,4 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return userRepository.existsByUsername(username);
     }
 
-    @Override
-    public void logout() {
-        SecurityContextHolder.clearContext();
-    }
 }

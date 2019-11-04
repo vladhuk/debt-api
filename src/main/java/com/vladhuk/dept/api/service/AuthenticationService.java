@@ -10,6 +10,4 @@ public interface AuthenticationService {
 
     Boolean isUsernameExist(String username);
 
-    void logout();
-
 }

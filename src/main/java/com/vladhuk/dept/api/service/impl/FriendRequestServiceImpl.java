@@ -1,29 +1,13 @@
 package com.vladhuk.dept.api.service.impl;
 
 import com.vladhuk.dept.api.model.FriendRequest;
-import com.vladhuk.dept.api.model.User;
-import com.vladhuk.dept.api.service.UserService;
+import com.vladhuk.dept.api.service.FriendRequestService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
-    @Override
-    public List<User> getAllFriends() {
-        return null;
-    }
-
-    @Override
-    public List<User> getFriendsPage(Integer pageNumber, Integer pageSize) {
-        return null;
-    }
-
-    @Override
-    public Boolean deleteFriend(Long friendId) {
-        return null;
-    }
-
+public class FriendRequestServiceImpl implements FriendRequestService {
     @Override
     public List<FriendRequest> getAllSentFriendRequests() {
         return null;
@@ -57,25 +41,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public FriendRequest rejectFriendRequest(Long requestId) {
         return null;
-    }
-
-    @Override
-    public List<User> getFullBlacklist() {
-        return null;
-    }
-
-    @Override
-    public List<User> getBlacklistPage(Integer pageNumber, Integer pageSize) {
-        return null;
-    }
-
-    @Override
-    public List<User> addUserToBlacklist(User user) {
-        return null;
-    }
-
-    @Override
-    public void deleteUserFromBlacklist(Long userId) {
-
     }
 }

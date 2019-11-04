@@ -1,7 +1,7 @@
 package com.vladhuk.dept.api.controller;
 
 import com.vladhuk.dept.api.model.RepaymentRequest;
-import com.vladhuk.dept.api.service.DebtService;
+import com.vladhuk.dept.api.service.RepaymentRequestService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,47 +10,47 @@ import java.util.List;
 @RequestMapping("/user-management/repayment-requests")
 public class RepaymentRequestController {
 
-    private DebtService debtService;
+    private RepaymentRequestService repaymentRequestService;
 
-    public RepaymentRequestController(DebtService debtService) {
-        this.debtService = debtService;
+    public RepaymentRequestController(RepaymentRequestService repaymentRequestService) {
+        this.repaymentRequestService = repaymentRequestService;
     }
 
     @GetMapping("/sent")
     public List<RepaymentRequest> getAllSentRepaymentRequests() {
-        return debtService.getAllSentRepaymentRequests();
+        return repaymentRequestService.getAllSentRepaymentRequests();
     }
 
     @GetMapping("/sent")
     public List<RepaymentRequest> getSentRepaymentRequestsPage(@RequestParam(value = "page") Integer pageNumber,
                                                                @RequestParam(value = "size") Integer pageSize) {
-        return debtService.getSentRepaymentRequestsPage(pageNumber, pageSize);
+        return repaymentRequestService.getSentRepaymentRequestsPage(pageNumber, pageSize);
     }
 
     @GetMapping("/received")
     public List<RepaymentRequest> getAllReceivedRepaymentRequests() {
-        return debtService.getAllReceivedRepaymentRequests();
+        return repaymentRequestService.getAllReceivedRepaymentRequests();
     }
 
     @GetMapping("/received")
     public List<RepaymentRequest> getReceivedRepaymentRequestsPage(@RequestParam(value = "page") Integer pageNumber,
                                                                    @RequestParam(value = "size") Integer pageSize) {
-        return debtService.getReceivedRepaymentRequestsPage(pageNumber, pageSize);
+        return repaymentRequestService.getReceivedRepaymentRequestsPage(pageNumber, pageSize);
     }
 
     @PostMapping
     public RepaymentRequest sendRepaymentRequest(@RequestBody RepaymentRequest repaymentRequest) {
-        return debtService.sendRepaymentRequest(repaymentRequest);
+        return repaymentRequestService.sendRepaymentRequest(repaymentRequest);
     }
 
     @PostMapping("/{requestId}/accept")
     public RepaymentRequest acceptRepaymentRequest(@PathVariable Long requestId) {
-        return debtService.acceptRepaymentRequest(requestId);
+        return repaymentRequestService.acceptRepaymentRequest(requestId);
     }
 
     @PostMapping("/{requestId}/reject")
     public RepaymentRequest rejectRepaymentRequest(@PathVariable Long requestId) {
-        return debtService.rejectRepaymentRequest(requestId);
+        return repaymentRequestService.rejectRepaymentRequest(requestId);
     }
 
 }

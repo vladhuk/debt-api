@@ -1,7 +1,7 @@
 package com.vladhuk.dept.api.controller;
 
 import com.vladhuk.dept.api.model.FriendRequest;
-import com.vladhuk.dept.api.service.UserService;
+import com.vladhuk.dept.api.service.FriendRequestService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,47 +10,47 @@ import java.util.List;
 @RequestMapping("/user-management/friend-requests")
 public class FriendRequestController {
 
-    private UserService userService;
+    private FriendRequestService friendRequestService;
 
-    public FriendRequestController(UserService userService) {
-        this.userService = userService;
+    public FriendRequestController(FriendRequestService friendRequestService) {
+        this.friendRequestService = friendRequestService;
     }
 
     @GetMapping("/sent")
     public List<FriendRequest> getAllSentFriendRequests() {
-        return userService.getAllSentFriendRequests();
+        return friendRequestService.getAllSentFriendRequests();
     }
 
     @GetMapping("/sent")
     public List<FriendRequest> getSentFriendRequestsPage(@RequestParam(value = "page") Integer pageNumber,
                                                          @RequestParam(value = "size") Integer pageSize) {
-        return userService.getSentFriendRequestsPage(pageNumber, pageSize);
+        return friendRequestService.getSentFriendRequestsPage(pageNumber, pageSize);
     }
 
     @GetMapping("/received")
     public List<FriendRequest> getAllReceivedFriendRequests() {
-        return userService.getAllReceivedFriendRequests();
+        return friendRequestService.getAllReceivedFriendRequests();
     }
 
     @GetMapping("/received")
     public List<FriendRequest> getReceivedFriendRequestsPage(@RequestParam(value = "page") Integer pageNumber,
                                                              @RequestParam(value = "size") Integer pageSize) {
-        return userService.getReceivedFriendRequestsPage(pageNumber, pageSize);
+        return friendRequestService.getReceivedFriendRequestsPage(pageNumber, pageSize);
     }
 
     @PostMapping
     public FriendRequest sendFriendRequest(@RequestBody FriendRequest friendRequest) {
-        return userService.sendFriendRequest(friendRequest);
+        return friendRequestService.sendFriendRequest(friendRequest);
     }
 
     @PostMapping("/{requestId}/accept")
     public FriendRequest acceptFriendRequest(@PathVariable Long requestId) {
-        return userService.acceptFriendRequest(requestId);
+        return friendRequestService.acceptFriendRequest(requestId);
     }
 
     @PostMapping("/{requestId}/reject")
     public FriendRequest rejectFriendRequest(@PathVariable Long requestId) {
-        return userService.rejectFriendRequest(requestId);
+        return friendRequestService.rejectFriendRequest(requestId);
     }
 
 }

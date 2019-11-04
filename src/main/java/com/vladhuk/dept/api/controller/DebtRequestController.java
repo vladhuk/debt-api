@@ -1,7 +1,7 @@
 package com.vladhuk.dept.api.controller;
 
 import com.vladhuk.dept.api.model.DebtRequest;
-import com.vladhuk.dept.api.service.DebtService;
+import com.vladhuk.dept.api.service.DebtRequestService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,47 +10,47 @@ import java.util.List;
 @RequestMapping("/user-management/debt-requests")
 public class DebtRequestController {
 
-    private DebtService debtService;
+    private DebtRequestService debtRequestService;
 
-    public DebtRequestController(DebtService debtService) {
-        this.debtService = debtService;
+    public DebtRequestController(DebtRequestService debtRequestService) {
+        this.debtRequestService = debtRequestService;
     }
 
     @GetMapping("/sent")
     public List<DebtRequest> getAllSentDebtRequests() {
-        return debtService.getAllSentDebtRequests();
+        return debtRequestService.getAllSentDebtRequests();
     }
 
     @GetMapping("/sent")
     public List<DebtRequest> getSentDebtRequestsPage(@RequestParam(value = "page") Integer pageNumber,
                                                      @RequestParam(value = "size") Integer pageSize) {
-        return debtService.getSentDebtRequestsPage(pageNumber, pageSize);
+        return debtRequestService.getSentDebtRequestsPage(pageNumber, pageSize);
     }
 
     @GetMapping("/received")
     public List<DebtRequest> getAllReceivedDebtRequests() {
-        return debtService.getAllReceivedDebtRequests();
+        return debtRequestService.getAllReceivedDebtRequests();
     }
 
     @GetMapping("/received")
     public List<DebtRequest> getReceivedDebtRequestsPage(@RequestParam(value = "page") Integer pageNumber,
                                                          @RequestParam(value = "size") Integer pageSize) {
-        return debtService.getReceivedDebtRequestsPage(pageNumber, pageSize);
+        return debtRequestService.getReceivedDebtRequestsPage(pageNumber, pageSize);
     }
 
     @PostMapping
     public DebtRequest sendDebtRequest(@RequestBody DebtRequest debtRequest) {
-        return debtService.sendDebtRequest(debtRequest);
+        return debtRequestService.sendDebtRequest(debtRequest);
     }
 
     @PostMapping("/{requestId}/accept")
     public DebtRequest acceptDebtRequest(@PathVariable Long requestId) {
-        return debtService.acceptDebtRequest(requestId);
+        return debtRequestService.acceptDebtRequest(requestId);
     }
 
     @PostMapping("/{requestId}/reject")
     public DebtRequest rejectDebtRequest(@PathVariable Long requestId) {
-        return debtService.rejectDebtRequest(requestId);
+        return debtRequestService.rejectDebtRequest(requestId);
     }
 
 }

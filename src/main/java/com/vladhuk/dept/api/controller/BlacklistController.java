@@ -1,7 +1,7 @@
 package com.vladhuk.dept.api.controller;
 
 import com.vladhuk.dept.api.model.User;
-import com.vladhuk.dept.api.service.UserService;
+import com.vladhuk.dept.api.service.BlacklistService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,31 +10,31 @@ import java.util.List;
 @RequestMapping("/user-management/blacklist")
 public class BlacklistController {
 
-    private UserService userService;
+    private BlacklistService blacklistService;
 
-    public BlacklistController(UserService userService) {
-        this.userService = userService;
+    public BlacklistController(BlacklistService blacklistService) {
+        this.blacklistService = blacklistService;
     }
 
     @GetMapping
     public List<User> getFullBlackList() {
-        return userService.getFullBlacklist();
+        return blacklistService.getFullBlacklist();
     }
 
     @GetMapping
     public List<User> getBlacklistPage(@RequestParam(value = "page") Integer pageNumber,
                                        @RequestParam(value = "size") Integer pageSize) {
-        return userService.getBlacklistPage(pageNumber, pageSize);
+        return blacklistService.getBlacklistPage(pageNumber, pageSize);
     }
 
     @PostMapping
     public List<User> addUserToBlacklist(@RequestBody User user) {
-        return userService.addUserToBlacklist(user);
+        return blacklistService.addUserToBlacklist(user);
     }
 
     @DeleteMapping("/{id}")
     public void deleteUserFromBlacklist(@PathVariable("id") Long userId) {
-        userService.deleteUserFromBlacklist(userId);
+        blacklistService.deleteUserFromBlacklist(userId);
     }
 
 }

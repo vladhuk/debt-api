@@ -1,7 +1,6 @@
 package com.vladhuk.dept.api.controller;
 
 import com.vladhuk.dept.api.model.Group;
-import com.vladhuk.dept.api.model.User;
 import com.vladhuk.dept.api.service.GroupService;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,9 +47,9 @@ public class GroupController {
         return groupService.updateGroup(group);
     }
 
-    @PostMapping("/groups/{id}/members")
-    public Group addMember(@PathVariable Long id, @RequestBody User member) {
-        return groupService.addMember(id, member);
+    @PutMapping("/groups/{id}/members/{memberId}")
+    public Group addMember(@PathVariable Long id, @PathVariable Long memberId) {
+        return groupService.addMember(id, memberId);
     }
 
     @DeleteMapping("/groups/{groupId}/members/{memberId}")

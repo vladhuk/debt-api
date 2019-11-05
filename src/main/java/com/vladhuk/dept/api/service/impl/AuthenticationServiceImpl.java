@@ -4,9 +4,9 @@ import com.vladhuk.dept.api.exception.AppException;
 import com.vladhuk.dept.api.model.Role;
 import com.vladhuk.dept.api.model.User;
 import com.vladhuk.dept.api.repository.RoleRepository;
-import com.vladhuk.dept.api.repository.UserRepository;
 import com.vladhuk.dept.api.security.JwtTokenProvider;
 import com.vladhuk.dept.api.service.AuthenticationService;
+import com.vladhuk.dept.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,16 +22,16 @@ import java.util.Collections;
 @Transactional
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private AuthenticationManager authenticationManager;
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
-    private JwtTokenProvider tokenProvider;
+    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider tokenProvider;
 
     @Autowired
-    public AuthenticationServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
+    public AuthenticationServiceImpl(AuthenticationManager authenticationManager, UserService userService, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
         this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
@@ -59,12 +59,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         newUser.setRoles(Collections.singleton(userRole));
 
-        return userRepository.save(newUser);
+        return userService.addUser(newUser);
     }
 
     @Override
     public Boolean isUsernameExist(String username) {
-        return userRepository.existsByUsername(username);
+        return userService.isUserExists(username);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        final String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.getUser(currentUsername);
     }
 
 }

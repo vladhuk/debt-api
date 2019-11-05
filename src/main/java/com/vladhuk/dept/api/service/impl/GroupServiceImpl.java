@@ -4,10 +4,12 @@ import com.vladhuk.dept.api.model.Group;
 import com.vladhuk.dept.api.model.User;
 import com.vladhuk.dept.api.service.GroupService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> getAllGroups() {

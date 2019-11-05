@@ -3,10 +3,12 @@ package com.vladhuk.dept.api.service.impl;
 import com.vladhuk.dept.api.model.DebtRequest;
 import com.vladhuk.dept.api.service.DebtRequestService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class DebtRequestServiceImpl implements DebtRequestService {
     @Override
     public List<DebtRequest> getAllSentDebtRequests() {

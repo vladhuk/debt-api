@@ -3,10 +3,12 @@ package com.vladhuk.dept.api.service.impl;
 import com.vladhuk.dept.api.model.RepaymentRequest;
 import com.vladhuk.dept.api.service.RepaymentRequestService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class RepaymentRequestServiceImpl implements RepaymentRequestService {
     @Override
     public List<RepaymentRequest> getAllSentRepaymentRequests() {

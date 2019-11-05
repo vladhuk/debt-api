@@ -4,8 +4,10 @@ import com.vladhuk.dept.api.model.User;
 import com.vladhuk.dept.api.repository.UserRepository;
 import com.vladhuk.dept.api.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;

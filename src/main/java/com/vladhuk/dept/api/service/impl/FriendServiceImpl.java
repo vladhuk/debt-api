@@ -3,10 +3,12 @@ package com.vladhuk.dept.api.service.impl;
 import com.vladhuk.dept.api.model.User;
 import com.vladhuk.dept.api.service.FriendService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class FriendServiceImpl implements FriendService {
     @Override
     public List<User> getAllFriends() {

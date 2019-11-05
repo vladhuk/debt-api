@@ -37,7 +37,7 @@ public class GroupServiceTest {
         registeredAndAuthTestUser1 = authenticationService.registerUser(testUser1);
         registeredTestUser2 = authenticationService.registerUser(testUser2);
 
-        authenticationService.authenticateAndGetToken(testUser1.getUsername(), testUser2.getPassword());
+        authenticationService.authenticateAndGetToken(testUser1.getUsername(), testUser1.getPassword());
 
         testGroup = new Group();
         testGroup.setTitle("Group name");
@@ -45,17 +45,22 @@ public class GroupServiceTest {
 
     @Test
     public void getAllGroups_When_UserHaveGroups_Expected_CorrectList() {
-        final Group ownGroup1 = groupService.createGroup(testGroup);
+        groupService.createGroup(testGroup);
 
+        testGroup = new Group();
         testGroup.setTitle("group2");
-        final Group ownGroup2 = groupService.createGroup(testGroup);
+        groupService.createGroup(testGroup);
 
+        SecurityContextHolder.clearContext();
+        authenticationService.authenticateAndGetToken(testUser2.getUsername(), testUser2.getPassword());
+
+        testGroup = new Group();
         testGroup.setTitle("group3");
-        testGroup.setOwner(registeredTestUser2);
-        final Group notOwnGroup1 = groupService.createGroup(testGroup);
+        groupService.createGroup(testGroup);
 
+        testGroup = new Group();
         testGroup.setTitle("group4");
-        final Group notOwnGroup2 = groupService.createGroup(testGroup);
+        groupService.createGroup(testGroup);
 
         final List<Group> groups = groupService.getAllGroups();
 
@@ -68,18 +73,24 @@ public class GroupServiceTest {
     @Test
     public void getGroupsPage_When_Page2Size1_Expected_CorrectResultWithCorrectOrder() {
         testGroup.setTitle("group1");
-        final Group ownGroup2 = groupService.createGroup(testGroup);
+        groupService.createGroup(testGroup);
+
+        testGroup = new Group();
         testGroup.setTitle("group3");
-        final Group ownGroup1 = groupService.createGroup(testGroup);
+        groupService.createGroup(testGroup);
+
+        testGroup = new Group();
         testGroup.setTitle("group2");
-        final Group ownGroup3 = groupService.createGroup(testGroup);
+        final Group ownGroup = groupService.createGroup(testGroup);
+
+        testGroup = new Group();
         testGroup.setTitle("group4");
-        final Group ownGroup4 = groupService.createGroup(testGroup);
+        groupService.createGroup(testGroup);
 
         final List<Group> groups = groupService.getGroupsPage(1, 1);
 
         assertEquals(1, groups.size());
-        assertEquals(ownGroup3, groups.get(0));
+        assertEquals(ownGroup, groups.get(0));
     }
 
     @Test
@@ -100,7 +111,7 @@ public class GroupServiceTest {
     public void addMember_When_CurrentUserOwnerAndGroupExistsAndNewMemberExists_Expected_GroupWithNewMember() {
         final Group group = groupService.createGroup(testGroup);
 
-        final Group groupWithMember = groupService.addMember(group.getId(), testUser2);
+        final Group groupWithMember = groupService.addMember(group.getId(), registeredTestUser2.getId());
         final Group fetchedGroup = groupService.getGroup(group.getId());
 
         assertEquals(fetchedGroup, groupWithMember);
@@ -109,7 +120,7 @@ public class GroupServiceTest {
     @Test
     public void deleteMember_When_MemberExist_Expected_DeleteMember() {
         Group group = groupService.createGroup(testGroup);
-        group = groupService.addMember(group.getId(), registeredTestUser2);
+        group = groupService.addMember(group.getId(), registeredTestUser2.getId());
 
         final Group resultGroup = groupService.deleteMember(group.getId(), registeredTestUser2.getId());
 

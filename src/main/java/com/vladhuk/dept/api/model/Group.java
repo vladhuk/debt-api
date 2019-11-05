@@ -3,6 +3,7 @@ package com.vladhuk.dept.api.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "groups_")
@@ -22,5 +23,5 @@ public class Group {
     @JoinTable(name = "groups_members",
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> members;
+    private List<User> members = new ArrayList<>();
 }

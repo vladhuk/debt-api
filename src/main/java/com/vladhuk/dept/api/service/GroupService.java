@@ -23,4 +23,6 @@ public interface GroupService {
 
     Group deleteMember(Long groupId, Long memberId);
 
+    Boolean isCurrentUserOwner(Group group);
+
 }

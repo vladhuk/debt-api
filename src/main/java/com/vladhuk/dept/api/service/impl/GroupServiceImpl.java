@@ -27,10 +27,6 @@ public class GroupServiceImpl implements GroupService {
         this.userService = userService;
     }
 
-    private boolean isCurrentUserOwner(Group group) {
-        return Objects.equals(group.getOwner(), authenticationService.getCurrentUser());
-    }
-
     @Override
     public List<Group> getAllGroups() {
         return null;
@@ -80,4 +76,10 @@ public class GroupServiceImpl implements GroupService {
     public Group deleteMember(Long groupId, Long memberId) {
         return null;
     }
+
+    @Override
+    public Boolean isCurrentUserOwner(Group group) {
+        return Objects.equals(group.getOwner(), authenticationService.getCurrentUser());
+    }
+
 }

@@ -6,6 +6,8 @@ import com.vladhuk.dept.api.repository.GroupRepository;
 import com.vladhuk.dept.api.service.AuthenticationService;
 import com.vladhuk.dept.api.service.GroupService;
 import com.vladhuk.dept.api.service.UserService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,22 +31,26 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<Group> getAllGroups() {
-        return null;
+        final Long ownerId = authenticationService.getCurrentUser().getId();
+        return groupRepository.findByOwnerId(ownerId);
     }
 
     @Override
     public List<Group> getGroupsPage(Integer pageNumber, Integer pageSize) {
-        return null;
+        final Long ownerId = authenticationService.getCurrentUser().getId();
+        return groupRepository.findByOwnerId(ownerId, PageRequest.of(pageNumber, pageSize, Sort.by("title").ascending()));
     }
 
     @Override
     public Group getGroup(Long groupId) {
-        return null;
+        final Long ownerId = authenticationService.getCurrentUser().getId();
+        return groupRepository.findByIdAndOwnerId(groupId, ownerId).orElse(null);
     }
 
     @Override
     public Group createGroup(Group group) {
-        return null;
+        group.setOwner(authenticationService.getCurrentUser());
+        return groupRepository.save(group);
     }
 
     @Override
@@ -58,9 +64,9 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group addMember(Long groupId, User member) {
+    public Group addMember(Long groupId, Long memberId) {
         final Optional<Group> optionalGroup = groupRepository.findById(groupId);
-        final User foundedUser = userService.getUser(member.getId());
+        final User foundedUser = userService.getUser(memberId);
 
         if (optionalGroup.isPresent() && isCurrentUserOwner(optionalGroup.get())) {
             final Group group = optionalGroup.get();
@@ -74,6 +80,16 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group deleteMember(Long groupId, Long memberId) {
+        final Optional<Group> optionalGroup = groupRepository.findById(groupId);
+        final User foundedUser = userService.getUser(memberId);
+
+        if (optionalGroup.isPresent() && isCurrentUserOwner(optionalGroup.get())) {
+            final Group group = optionalGroup.get();
+            group.getMembers().remove(foundedUser);
+
+            return groupRepository.save(group);
+        }
+
         return null;
     }
 

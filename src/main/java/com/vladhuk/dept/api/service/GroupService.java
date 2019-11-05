@@ -1,7 +1,6 @@
 package com.vladhuk.dept.api.service;
 
 import com.vladhuk.dept.api.model.Group;
-import com.vladhuk.dept.api.model.User;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public interface GroupService {
 
     Group updateGroup(Group group);
 
-    Group addMember(Long groupId, User member);
+    Group addMember(Long groupId, Long memberId);
 
     Group deleteMember(Long groupId, Long memberId);
 

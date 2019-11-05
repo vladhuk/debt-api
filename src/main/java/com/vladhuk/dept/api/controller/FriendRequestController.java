@@ -38,6 +38,11 @@ public class FriendRequestController {
         return friendRequestService.getReceivedFriendRequestsPage(pageNumber, pageSize);
     }
 
+    @GetMapping("/received/new/count")
+    public Long countNewReceivedFriendRequests() {
+        return friendRequestService.countNewReceivedFriendRequests();
+    }
+
     @PostMapping
     public FriendRequest sendFriendRequest(@RequestBody FriendRequest friendRequest) {
         return friendRequestService.sendFriendRequest(friendRequest);

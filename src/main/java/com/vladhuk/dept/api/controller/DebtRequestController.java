@@ -38,6 +38,11 @@ public class DebtRequestController {
         return debtRequestService.getReceivedDebtRequestsPage(pageNumber, pageSize);
     }
 
+    @GetMapping("/received/new/count")
+    public Long countNewReceivedDebtRequests() {
+        return debtRequestService.countNewReceivedDebtRequests();
+    }
+
     @PostMapping
     public DebtRequest sendDebtRequest(@RequestBody DebtRequest debtRequest) {
         return debtRequestService.sendDebtRequest(debtRequest);

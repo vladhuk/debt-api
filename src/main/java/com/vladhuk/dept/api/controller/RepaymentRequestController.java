@@ -38,6 +38,11 @@ public class RepaymentRequestController {
         return repaymentRequestService.getReceivedRepaymentRequestsPage(pageNumber, pageSize);
     }
 
+    @GetMapping("/received/new/count")
+    public Long countNewReceivedDebtRequests() {
+        return repaymentRequestService.countNewReceivedRepaymentRequests();
+    }
+
     @PostMapping
     public RepaymentRequest sendRepaymentRequest(@RequestBody RepaymentRequest repaymentRequest) {
         return repaymentRequestService.sendRepaymentRequest(repaymentRequest);

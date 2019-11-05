@@ -29,6 +29,11 @@ public class DebtRequestServiceImpl implements DebtRequestService {
     }
 
     @Override
+    public Long countNewReceivedDebtRequests() {
+        return null;
+    }
+
+    @Override
     public DebtRequest sendDebtRequest(DebtRequest debtRequest) {
         return null;
     }

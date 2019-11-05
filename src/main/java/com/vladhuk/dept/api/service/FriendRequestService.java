@@ -14,6 +14,8 @@ public interface FriendRequestService {
 
     List<FriendRequest> getReceivedFriendRequestsPage(Integer pageNumber, Integer pageSize);
 
+    Long countNewReceivedFriendRequests();
+
     FriendRequest sendFriendRequest(FriendRequest friendRequest);
 
     FriendRequest acceptFriendRequest(Long requestId);

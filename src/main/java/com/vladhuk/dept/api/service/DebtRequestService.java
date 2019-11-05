@@ -14,6 +14,8 @@ public interface DebtRequestService {
 
     List<DebtRequest> getReceivedDebtRequestsPage(Integer pageNumber, Integer pageSize);
 
+    Long countNewReceivedDebtRequests();
+
     DebtRequest sendDebtRequest(DebtRequest debtRequest);
 
     DebtRequest acceptDebtRequest(Long requestId);

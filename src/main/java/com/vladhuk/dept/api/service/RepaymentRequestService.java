@@ -14,6 +14,8 @@ public interface RepaymentRequestService {
 
     List<RepaymentRequest> getReceivedRepaymentRequestsPage(Integer pageNumber, Integer pageSize);
 
+    Long countNewReceivedRepaymentRequests();
+
     RepaymentRequest sendRepaymentRequest(RepaymentRequest repaymentRequest);
 
     RepaymentRequest acceptRepaymentRequest(Long requestId);

@@ -29,6 +29,11 @@ public class RepaymentRequestServiceImpl implements RepaymentRequestService {
     }
 
     @Override
+    public Long countNewReceivedRepaymentRequests() {
+        return null;
+    }
+
+    @Override
     public RepaymentRequest sendRepaymentRequest(RepaymentRequest repaymentRequest) {
         return null;
     }

@@ -29,6 +29,11 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
+    public Long countNewReceivedFriendRequests() {
+        return null;
+    }
+
+    @Override
     public FriendRequest sendFriendRequest(FriendRequest friendRequest) {
         return null;
     }

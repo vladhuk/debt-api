@@ -77,4 +77,12 @@ public class AuthenticationServiceTest {
                      () -> authenticationService.authenticateAndGetToken(testUser.getUsername(), testUser.getPassword()));
     }
 
+    @Test
+    public void getCurrentUser_When_UserSignedIn_Expected_User() {
+        final User registeredUser = authenticationService.registerUser(testUser);
+        authenticationService.authenticateAndGetToken(testUser.getUsername(), testUser.getPassword());
+
+        assertEquals(registeredUser, authenticationService.getCurrentUser());
+    }
+
 }

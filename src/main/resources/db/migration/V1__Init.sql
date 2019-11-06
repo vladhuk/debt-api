@@ -1,41 +1,23 @@
+create schema debt collate latin1_swedish_ci;
+
 create table hibernate_sequence
 (
 	next_val bigint null
-)
-;
+);
 
 create table roles
 (
 	id bigint not null
 		primary key,
 	name varchar(255) null
-)
-;
+);
 
 create table status
 (
 	id bigint not null
 		primary key,
 	name varchar(255) null
-)
-;
-
-create table user_friends
-(
-	user_id bigint not null,
-	user_friend_id bigint not null,
-	constraint UK_b7m7khcaqjn2jqp75dwvc504l
-		unique (user_friend_id)
-)
-;
-
-create table user_roles
-(
-	user_id bigint not null,
-	role_id bigint not null,
-	primary key (user_id, role_id)
-)
-;
+);
 
 create table users
 (
@@ -48,8 +30,7 @@ create table users
 	username varchar(255) null,
 	constraint UKr43af9ap4edm43mmtq01oddj6
 		unique (username)
-)
-;
+);
 
 create table debts
 (
@@ -64,8 +45,7 @@ create table debts
 		foreign key (borrower_id) references users (id),
 	constraint FKsr7ggg84v3isgrrjx076opj78
 		foreign key (creditor_id) references users (id)
-)
-;
+);
 
 create table groups_
 (
@@ -75,8 +55,7 @@ create table groups_
 	owner_id bigint null,
 	constraint FKmm3rm9xc0qu00qr4iq6mf2wqp
 		foreign key (owner_id) references users (id)
-)
-;
+);
 
 create table groups_members
 (
@@ -88,8 +67,7 @@ create table groups_members
 		foreign key (user_id) references users (id),
 	constraint FK5de7dqov8agkuq98cmwg811e0
 		foreign key (group_id) references groups_ (id)
-)
-;
+);
 
 create table orders_
 (
@@ -105,8 +83,7 @@ create table orders_
 		foreign key (sender_id) references users (id),
 	constraint FKi5u9gerkjrj40yqna80wdapfp
 		foreign key (receiver_id) references users (id)
-)
-;
+);
 
 create table requests_debt
 (
@@ -121,8 +98,7 @@ create table requests_debt
 		foreign key (sender_id) references users (id),
 	constraint FKoislyrm65p1jreesyxsia8nj2
 		foreign key (status_id) references status (id)
-)
-;
+);
 
 create table requests_debt_orders
 (
@@ -134,8 +110,7 @@ create table requests_debt_orders
 		foreign key (request_id) references requests_debt (id),
 	constraint FK8jlkooq4nvdmof36kpllshmi1
 		foreign key (order_id) references orders_ (id)
-)
-;
+);
 
 create table requests_friend
 (
@@ -153,8 +128,7 @@ create table requests_friend
 		foreign key (status_id) references status (id),
 	constraint FKllxnm2r5ibhy070kg94vdxf29
 		foreign key (receiver_id) references users (id)
-)
-;
+);
 
 create table requests_repayment
 (
@@ -172,17 +146,36 @@ create table requests_repayment
 		foreign key (sender_id) references users (id),
 	constraint FKd39xjqwt93kh25l74sniqv3ae
 		foreign key (status_id) references status (id)
-)
-;
+);
 
 create table user_blacklist
 (
 	user_id bigint not null,
 	user_black_id bigint not null,
-	constraint UK_gy2f4r87ijt7a01xwyuvvumq7
-		unique (user_black_id),
+	constraint FKc718a3p0qxcr3k7xakl2ifj9c
+		foreign key (user_id) references users (id),
 	constraint FKtlefjifyhg0ykrrye6lq85s4b
 		foreign key (user_black_id) references users (id)
-)
-;
+);
+
+create table user_friends
+(
+	user_id bigint not null,
+	user_friend_id bigint not null,
+	constraint FKbkxv9u4m4o1mw3hy77b9p5o4u
+		foreign key (user_friend_id) references users (id),
+	constraint FKk08ugelrh9cea1oew3hgxryw2
+		foreign key (user_id) references users (id)
+);
+
+create table user_roles
+(
+	user_id bigint not null,
+	role_id bigint not null,
+	primary key (user_id, role_id),
+	constraint FKh8ciramu9cc9q3qcqiv4ue8a6
+		foreign key (role_id) references roles (id),
+	constraint FKhfh9dx7w3ubf1co1vdev94g3f
+		foreign key (user_id) references users (id)
+);
 

@@ -15,7 +15,7 @@ public class Order {
 
     private Float amount;
 
-    @OneToOne
+    @ManyToOne
     private Status status;
 
     @ManyToOne

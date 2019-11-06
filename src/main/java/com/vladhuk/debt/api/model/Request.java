@@ -3,7 +3,10 @@ package com.vladhuk.debt.api.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 @Data
@@ -19,7 +22,7 @@ public abstract class Request extends DateAudit {
     @ManyToOne
     private User sender;
 
-    @OneToOne
+    @ManyToOne
     private Status status;
 
 }

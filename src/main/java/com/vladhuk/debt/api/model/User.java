@@ -29,13 +29,13 @@ public class User extends DateAudit {
     @JsonIgnore
     private String password;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(name = "user_friends",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "user_friend_id"))
     private List<User> friends = new ArrayList<>();
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(name = "user_blacklist",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "user_black_id"))

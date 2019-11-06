@@ -10,4 +10,6 @@ public interface DebtService {
 
     List<Debt> getDebtsPage(Integer pageNumber, Integer pageSize);
 
+    Boolean isExistsDebtWithUser(Long userId);
+
 }

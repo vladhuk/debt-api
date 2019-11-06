@@ -35,4 +35,13 @@ public class DebtServiceImp implements DebtService {
         final Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return debtRepository.findAllByCreditorIdOrBorrowerId(currentUserId, currentUserId, pageable);
     }
+
+    @Override
+    public Boolean isExistsDebtWithUser(Long userId) {
+        final Long currentUserId = authenticationService.getCurrentUser().getId();
+
+        return debtRepository.existsByCreditorIdAndBorrowerId(currentUserId, userId)
+                && debtRepository.existsByCreditorIdAndBorrowerId(userId, currentUserId);
+    }
+
 }

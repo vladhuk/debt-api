@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -32,13 +33,13 @@ public class User extends DateAudit {
     @JoinTable(name = "user_friends",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "user_friend_id"))
-    private List<User> friends;
+    private List<User> friends = new ArrayList<>();
 
     @OneToMany
     @JoinTable(name = "user_blacklist",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "user_black_id"))
-    private List<User> blacklist;
+    private List<User> blacklist = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "user_roles",

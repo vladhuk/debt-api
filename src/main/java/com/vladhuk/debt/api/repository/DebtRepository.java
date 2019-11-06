@@ -12,4 +12,6 @@ public interface DebtRepository extends PagingAndSortingRepository<Debt, Long> {
 
     List<Debt> findAllByCreditorIdOrBorrowerId(Long creditorId, Long borrowerId, Pageable pageable);
 
+    Boolean existsByCreditorIdAndBorrowerId(Long creditorId, Long borrowerId);
+
 }

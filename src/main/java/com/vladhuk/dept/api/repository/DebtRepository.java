@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface DebtRepository extends PagingAndSortingRepository<Debt, Long> {
 
+    List<Debt> findAllByCreditorIdOrBorrowerId(Long creditorId, Long borrowerId);
+
     List<Debt> findAllByCreditorIdOrBorrowerId(Long creditorId, Long borrowerId, Pageable pageable);
 
 }

@@ -1,5 +1,3 @@
-create schema debt collate latin1_swedish_ci;
-
 create table hibernate_sequence
 (
 	next_val bigint null

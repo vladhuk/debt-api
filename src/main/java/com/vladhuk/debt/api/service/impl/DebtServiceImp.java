@@ -37,11 +37,37 @@ public class DebtServiceImp implements DebtService {
     }
 
     @Override
+    public Debt getDebt(Long id) {
+        return debtRepository.findById(id).orElse(null);
+    }
+    @Override
     public Boolean isExistsDebtWithUser(Long userId) {
         final Long currentUserId = authenticationService.getCurrentUser().getId();
 
         return debtRepository.existsByCreditorIdAndBorrowerId(currentUserId, userId)
                 || debtRepository.existsByCreditorIdAndBorrowerId(userId, currentUserId);
+    }
+
+    @Override
+    public Debt createDebt(Debt debt) {
+        return debtRepository.save(debt);
+    }
+
+    @Override
+    public void deleteDebt(Long id) {
+        debtRepository.deleteById(id);
+    }
+
+    @Override
+    public Debt addToBalance(Long debtId, Float cash) {
+        final Debt debt = getDebt(debtId);
+        debt.setBalance(debt.getBalance() + cash);
+        return debtRepository.save(debt);
+    }
+
+    @Override
+    public Boolean isBalanceZero(Debt debt) {
+        return Math.abs(debt.getBalance()) < 0.005;
     }
 
 }

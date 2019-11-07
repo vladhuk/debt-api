@@ -10,6 +10,16 @@ public interface DebtService {
 
     List<Debt> getDebtsPage(Integer pageNumber, Integer pageSize);
 
+    Debt getDebt(Long id);
+
     Boolean isExistsDebtWithUser(Long userId);
+
+    Debt createDebt(Debt debt);
+
+    void deleteDebt(Long id);
+
+    Debt addToBalance(Long debtId, Float cash);
+
+    Boolean isBalanceZero(Debt debt);
 
 }

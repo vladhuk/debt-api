@@ -2,7 +2,6 @@ package com.vladhuk.debt.api.service;
 
 import com.vladhuk.debt.api.model.Debt;
 import com.vladhuk.debt.api.model.User;
-import com.vladhuk.debt.api.repository.DebtRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class FriendServiceTest {
     @Autowired
     private AuthenticationService authenticationService;
     @Autowired
-    private DebtRepository debtRepository;
+    private DebtService debtService;
 
     private User testUser1 = new User("Name1", "Username1", "Password1");
     private User testUser2 = new User("Name2", "Username2", "Password2");
@@ -40,11 +39,8 @@ public class FriendServiceTest {
 
     @Test
     public void deleteFriend_WhenExistsDebtWithFriend_Expected_False() {
-        final Debt debt = new Debt();
-        debt.setCreditor(registeredTestUser1);
-        debt.setBorrower(registeredTestUser2);
-        debt.setBalance(1.0f);
-        debtRepository.save(debt);
+        final Debt debt = new Debt(registeredTestUser1, registeredTestUser2, 1.0f);
+        debtService.createDebt(debt);
 
         registeredTestUser1.getFriends().add(registeredTestUser2);
         final User userWithFriend = userService.updateUser(registeredTestUser1);
@@ -57,6 +53,5 @@ public class FriendServiceTest {
     public void deleteFriend_WhenNotExistsDebtWithFriend_Expected_True() {
 
     }
-
 
 }

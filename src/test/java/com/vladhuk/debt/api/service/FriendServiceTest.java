@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -46,12 +45,16 @@ public class FriendServiceTest {
         final User userWithFriend = userService.updateUser(registeredTestUser1);
 
         assertFalse(friendService.deleteFriend(registeredTestUser2.getId()));
-        assertEquals(1, userWithFriend.getFriends().size());
+        assertEquals(1, userService.getUser(userWithFriend.getId()).getFriends().size());
     }
 
     @Test
     public void deleteFriend_WhenNotExistsDebtWithFriend_Expected_True() {
+        registeredTestUser1.getFriends().add(registeredTestUser2);
+        final User userWithFriend = userService.updateUser(registeredTestUser1);
 
+        assertTrue(friendService.deleteFriend(registeredTestUser2.getId()));
+        assertEquals(0, userService.getUser(userWithFriend.getId()).getFriends().size());
     }
 
 }

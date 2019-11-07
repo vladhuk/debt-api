@@ -41,7 +41,7 @@ public class DebtServiceImp implements DebtService {
         final Long currentUserId = authenticationService.getCurrentUser().getId();
 
         return debtRepository.existsByCreditorIdAndBorrowerId(currentUserId, userId)
-                && debtRepository.existsByCreditorIdAndBorrowerId(userId, currentUserId);
+                || debtRepository.existsByCreditorIdAndBorrowerId(userId, currentUserId);
     }
 
 }

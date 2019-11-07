@@ -49,7 +49,7 @@ public class FriendServiceTest {
         registeredTestUser1.getFriends().add(registeredTestUser2);
         final User userWithFriend = userService.updateUser(registeredTestUser1);
 
-        assertFalse(friendService.deleteFriend(testUser2.getId()));
+        assertFalse(friendService.deleteFriend(registeredTestUser2.getId()));
         assertEquals(1, userWithFriend.getFriends().size());
     }
 

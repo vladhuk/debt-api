@@ -16,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-
 @Service
 @Transactional
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -57,7 +55,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         final Role userRole = roleRepository.findByName(Role.RoleName.USER)
                 .orElseThrow(() -> new AppException("User Role not set."));
 
-        newUser.setRoles(Collections.singleton(userRole));
+        newUser.getRoles().add(userRole);
 
         return userService.addUser(newUser);
     }

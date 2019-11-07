@@ -2,6 +2,7 @@ package com.vladhuk.debt.api.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -19,6 +20,7 @@ import javax.persistence.*;
 @Table(name = "debts")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class Debt extends DateAudit {
 
     @Id
@@ -32,5 +34,11 @@ public class Debt extends DateAudit {
     private User borrower;
 
     private Float balance;
+
+    public Debt(User creditor, User borrower, Float balance) {
+        this.creditor = creditor;
+        this.borrower = borrower;
+        this.balance = balance;
+    }
 
 }

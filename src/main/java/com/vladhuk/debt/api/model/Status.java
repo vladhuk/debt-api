@@ -2,12 +2,10 @@ package com.vladhuk.debt.api.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "status_")
 @Data
 public class Status {
 

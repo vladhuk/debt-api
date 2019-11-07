@@ -10,7 +10,7 @@ create table roles
 	name varchar(255) null
 );
 
-create table status
+create table status_
 (
 	id bigint not null
 		primary key,
@@ -75,8 +75,8 @@ create table orders_
 	receiver_id bigint null,
 	sender_id bigint null,
 	status_id bigint null,
-	constraint FK6y96acus2s0ww9y74viyndj88
-		foreign key (status_id) references status (id),
+	constraint FK7u3wre46942b7ytyrpjsxoxk2
+		foreign key (status_id) references status_ (id),
 	constraint FKi1nh1a0ysg0euw1hulkmrqtty
 		foreign key (sender_id) references users (id),
 	constraint FKi5u9gerkjrj40yqna80wdapfp
@@ -94,8 +94,8 @@ create table requests_debt
 	status_id bigint null,
 	constraint FKk7qp014evvnhn5th5ypfqokim
 		foreign key (sender_id) references users (id),
-	constraint FKoislyrm65p1jreesyxsia8nj2
-		foreign key (status_id) references status (id)
+	constraint FKohosbf6anjhgpbvilbml552fs
+		foreign key (status_id) references status_ (id)
 );
 
 create table requests_debt_orders
@@ -122,8 +122,8 @@ create table requests_friend
 	receiver_id bigint null,
 	constraint FK4rn7u93t5yfq7w2pynq928jxv
 		foreign key (sender_id) references users (id),
-	constraint FK9rwlt6gca391wk3j9oltybrfc
-		foreign key (status_id) references status (id),
+	constraint FKhqqsud20b9bbhvjptxlef8vqc
+		foreign key (status_id) references status_ (id),
 	constraint FKllxnm2r5ibhy070kg94vdxf29
 		foreign key (receiver_id) references users (id)
 );
@@ -142,8 +142,8 @@ create table requests_repayment
 		foreign key (order_id) references orders_ (id),
 	constraint FKbgfmledm3sgcexli9djepfdw2
 		foreign key (sender_id) references users (id),
-	constraint FKd39xjqwt93kh25l74sniqv3ae
-		foreign key (status_id) references status (id)
+	constraint FKqijbv5p2eomf7msnbb3tfncsl
+		foreign key (status_id) references status_ (id)
 );
 
 create table user_blacklist

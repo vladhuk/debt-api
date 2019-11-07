@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface FriendRepository extends PagingAndSortingRepository<User, Long> {
 
-    @Query("SELECT friends FROM User WHERE id = ?1")
+    @Query("SELECT u.friends FROM User u WHERE u.id = ?1")
     List<User> findAllFriendsByUserId(Long userId, Pageable pageable);
 
 }

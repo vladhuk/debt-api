@@ -37,24 +37,45 @@ public class FriendServiceTest {
     }
 
     @Test
-    public void deleteFriend_WhenExistsDebtWithFriend_Expected_False() {
-        final Debt debt = new Debt(registeredTestUser1, registeredTestUser2, 1.0f);
-        debtService.createDebt(debt);
+    public void createFriendship_When_UsersNotFriends_Expected_UserHaveFriendAndFriendHaveUser() {
+        final User currentUser = friendService.createFriendship(registeredTestUser2.getId());
 
-        registeredTestUser1.getFriends().add(registeredTestUser2);
-        final User userWithFriend = userService.updateUser(registeredTestUser1);
-
-        assertFalse(friendService.deleteFriend(registeredTestUser2.getId()));
-        assertEquals(1, userService.getUser(userWithFriend.getId()).getFriends().size());
+        assertEquals(1, currentUser.getFriends().size());
+        assertEquals(1, userService.getUser(registeredTestUser2).getFriends().size());
     }
 
     @Test
-    public void deleteFriend_WhenNotExistsDebtWithFriend_Expected_True() {
-        registeredTestUser1.getFriends().add(registeredTestUser2);
-        final User userWithFriend = userService.updateUser(registeredTestUser1);
+    public void deleteFriendship_WhenExistsDebtWithFriend_Expected_False() {
+        final Debt debt = new Debt(registeredTestUser1, registeredTestUser2, 1.0f);
+        debtService.createDebt(debt);
 
-        assertTrue(friendService.deleteFriend(registeredTestUser2.getId()));
-        assertEquals(0, userService.getUser(userWithFriend.getId()).getFriends().size());
+        friendService.createFriendship(registeredTestUser2.getId());
+
+        assertFalse(friendService.deleteFriendship(registeredTestUser2.getId()));
+        assertEquals(1, userService.getUser(registeredTestUser1).getFriends().size());
+        assertEquals(1, userService.getUser(registeredTestUser2).getFriends().size());
+    }
+
+    @Test
+    public void deleteFriendship_WhenNotExistsDebtWithFriend_Expected_True() {
+        registeredTestUser1.getFriends().add(registeredTestUser2);
+        userService.updateUser(registeredTestUser1);
+
+        assertTrue(friendService.deleteFriendship(registeredTestUser2.getId()));
+        assertEquals(0, userService.getUser(registeredTestUser1).getFriends().size());
+        assertEquals(0, userService.getUser(registeredTestUser2).getFriends().size());
+    }
+
+    @Test
+    public void isFriend_When_UserFriend_Expected_True() {
+        friendService.createFriendship(registeredTestUser2.getId());
+
+        assertTrue(friendService.isFriend(registeredTestUser2.getId()));
+    }
+
+    @Test
+    public void isFriend_When_UserNotFriend_Expected_False() {
+        assertFalse(friendService.isFriend(registeredTestUser2.getId()));
     }
 
 }

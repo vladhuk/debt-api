@@ -82,4 +82,18 @@ public class BlacklistServiceTest {
         assertEquals(0, currentUser.getBlacklist().size());
     }
 
+    @Test
+    public void isUsersBlacklistContainsCurrentUser_When_UserInBlackList_Expected_True() {
+        blacklistService.addUserToBlacklist(registeredTestUser2);
+
+        authenticationService.authenticateAndGetToken(testUser2.getUsername(), testUser2.getPassword());
+
+        assertTrue(blacklistService.isUsersBlacklistContainsCurrentUser(registeredTestUser1.getId()));
+    }
+
+    @Test
+    public void isUsersBlacklistContainsCurrentUser_When_UserNotInBlackList_Expected_False() {
+        assertFalse(blacklistService.isUsersBlacklistContainsCurrentUser(registeredTestUser2.getId()));
+    }
+
 }

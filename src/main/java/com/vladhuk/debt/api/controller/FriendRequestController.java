@@ -56,7 +56,7 @@ public class FriendRequestController {
 
     @PostMapping("/{requestId}/accept")
     public FriendRequest acceptFriendRequest(@PathVariable Long requestId) {
-        return friendRequestService.acceptFriendRequest(requestId);
+        return friendRequestService.confirmFriendRequest(requestId);
     }
 
     @PostMapping("/{requestId}/reject")

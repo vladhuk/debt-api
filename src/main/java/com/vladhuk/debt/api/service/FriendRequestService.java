@@ -24,7 +24,7 @@ public interface FriendRequestService {
 
     Optional<FriendRequest> sendFriendRequest(FriendRequest friendRequest);
 
-    FriendRequest acceptFriendRequest(Long requestId);
+    FriendRequest confirmFriendRequest(Long requestId);
 
     FriendRequest rejectFriendRequest(Long requestId);
 

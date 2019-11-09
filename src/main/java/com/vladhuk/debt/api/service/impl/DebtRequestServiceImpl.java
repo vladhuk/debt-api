@@ -41,7 +41,7 @@ public class DebtRequestServiceImpl implements DebtRequestService {
     }
 
     @Override
-    public DebtRequest acceptDebtRequest(Long requestId) {
+    public DebtRequest confirmDebtRequest(Long requestId) {
         return null;
     }
 

@@ -18,7 +18,7 @@ public interface RepaymentRequestService {
 
     RepaymentRequest sendRepaymentRequest(RepaymentRequest repaymentRequest);
 
-    RepaymentRequest acceptRepaymentRequest(Long requestId);
+    RepaymentRequest confirmRepaymentRequest(Long requestId);
 
     RepaymentRequest rejectRepaymentRequest(Long requestId);
 

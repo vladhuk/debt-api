@@ -41,7 +41,7 @@ public class RepaymentRequestServiceImpl implements RepaymentRequestService {
     }
 
     @Override
-    public RepaymentRequest acceptRepaymentRequest(Long requestId) {
+    public RepaymentRequest confirmRepaymentRequest(Long requestId) {
         return null;
     }
 

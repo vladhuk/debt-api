@@ -18,7 +18,7 @@ public interface DebtRequestService {
 
     DebtRequest sendDebtRequest(DebtRequest debtRequest);
 
-    DebtRequest acceptDebtRequest(Long requestId);
+    DebtRequest confirmDebtRequest(Long requestId);
 
     DebtRequest rejectDebtRequest(Long requestId);
 

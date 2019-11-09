@@ -50,7 +50,7 @@ public class RepaymentRequestController {
 
     @PostMapping("/{requestId}/accept")
     public RepaymentRequest acceptRepaymentRequest(@PathVariable Long requestId) {
-        return repaymentRequestService.acceptRepaymentRequest(requestId);
+        return repaymentRequestService.confirmRepaymentRequest(requestId);
     }
 
     @PostMapping("/{requestId}/reject")

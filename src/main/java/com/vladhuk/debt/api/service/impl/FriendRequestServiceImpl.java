@@ -26,13 +26,15 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     private final StatusService statusService;
     private final UserService userService;
     private final FriendService friendService;
+    private final BlacklistService blacklistService;
 
-    public FriendRequestServiceImpl(FriendRequestRepository friendRequestRepository, AuthenticationService authenticationService, StatusService statusService, UserService userService, FriendService friendService) {
+    public FriendRequestServiceImpl(FriendRequestRepository friendRequestRepository, AuthenticationService authenticationService, StatusService statusService, UserService userService, FriendService friendService, BlacklistService blacklistService) {
         this.friendRequestRepository = friendRequestRepository;
         this.authenticationService = authenticationService;
         this.statusService = statusService;
         this.userService = userService;
         this.friendService = friendService;
+        this.blacklistService = blacklistService;
     }
 
     @Override
@@ -89,7 +91,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     public Optional<FriendRequest> sendFriendRequest(FriendRequest friendRequest) {
         final User receiver = userService.getUser(friendRequest.getReceiver());
 
-        if (friendService.isFriend(receiver.getId())) {
+        if (!friendService.isFriend(receiver.getId()) && !blacklistService.isUsersBlacklistContainsCurrentUser(receiver.getId())) {
             final FriendRequest requestForSave = new FriendRequest();
             requestForSave.setSender(authenticationService.getCurrentUser());
             requestForSave.setReceiver(receiver);
@@ -98,15 +100,17 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
             return Optional.of(friendRequestRepository.save(requestForSave));
         }
+
         return Optional.empty();
     }
 
     // TODO: Make optional
     @Override
-    public FriendRequest acceptFriendRequest(Long requestId) {
+    public FriendRequest confirmFriendRequest(Long requestId) {
         final Long currentUserId = authenticationService.getCurrentUser().getId();
+        final Long viewedStatusId = statusService.getStatus(VIEWED).getId();
         final FriendRequest friendRequest =
-                friendRequestRepository.findByIdAndReceiverId(requestId, currentUserId).get();
+                friendRequestRepository.findByIdAndReceiverIdAndStatusId(requestId, currentUserId, viewedStatusId).get();
 
         friendRequest.setStatus(statusService.getStatus(CONFIRMED));
         friendService.createFriendship(friendRequest.getSender().getId());
@@ -117,8 +121,9 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     @Override
     public FriendRequest rejectFriendRequest(Long requestId) {
         final Long currentUserId = authenticationService.getCurrentUser().getId();
+        final Long viewedStatusId = statusService.getStatus(VIEWED).getId();
         final FriendRequest friendRequest =
-                friendRequestRepository.findByIdAndReceiverId(requestId, currentUserId).get();
+                friendRequestRepository.findByIdAndReceiverIdAndStatusId(requestId, currentUserId, viewedStatusId).get();
 
         friendRequest.setStatus(statusService.getStatus(REJECTED));
         return friendRequestRepository.save(friendRequest);

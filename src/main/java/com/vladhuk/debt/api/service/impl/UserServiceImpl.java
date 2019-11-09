@@ -16,11 +16,13 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    // TODO: Make optional
     @Override
     public User getUser(Long userId) {
         return userRepository.findById(userId).orElse(null);
     }
 
+    // TODO: Make optional
     @Override
     public User getUser(String username) {
         return userRepository.findByUsername(username).orElse(null);

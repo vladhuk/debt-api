@@ -41,6 +41,7 @@ public class GroupServiceImpl implements GroupService {
         return groupRepository.findByOwnerId(ownerId, PageRequest.of(pageNumber, pageSize, Sort.by("title").ascending()));
     }
 
+    // TODO: Make optional
     @Override
     public Group getGroup(Long groupId) {
         final Long ownerId = authenticationService.getCurrentUser().getId();

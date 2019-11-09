@@ -36,10 +36,12 @@ public class DebtServiceImp implements DebtService {
         return debtRepository.findAllByCreditorIdOrBorrowerId(currentUserId, currentUserId, pageable);
     }
 
+    // TODO: Make optional
     @Override
     public Debt getDebt(Long id) {
         return debtRepository.findById(id).orElse(null);
     }
+
     @Override
     public Boolean isExistsDebtWithUser(Long userId) {
         final Long currentUserId = authenticationService.getCurrentUser().getId();

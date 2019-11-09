@@ -27,6 +27,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUser(User user) {
+        return user.getId() != null ? getUser(user.getId()) : getUser(user.getUsername());
+    }
+
+    @Override
     public User addUser(User user) {
         return userRepository.save(user);
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class User extends DateAudit {
     @JsonIgnore
     private String password;
 
+    @EqualsAndHashCode.Exclude @ToString.Exclude
     @JsonIgnore
     @ManyToMany
     @JoinTable(name = "user_friends",
@@ -37,6 +39,7 @@ public class User extends DateAudit {
             inverseJoinColumns = @JoinColumn(name = "user_friend_id"))
     private List<User> friends = new ArrayList<>();
 
+    @EqualsAndHashCode.Exclude @ToString.Exclude
     @JsonIgnore
     @ManyToMany
     @JoinTable(name = "user_blacklist",

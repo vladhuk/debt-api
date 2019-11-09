@@ -10,6 +10,10 @@ public interface FriendService {
 
     List<User> getFriendsPage(Integer pageNumber, Integer pageSize);
 
-    Boolean deleteFriend(Long friendId);
+    Boolean deleteFriendship(Long friendId);
+
+    User createFriendship(Long friendId);
+
+    Boolean isFriend(Long userId);
 
 }

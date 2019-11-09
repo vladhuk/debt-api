@@ -43,14 +43,40 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public Boolean deleteFriend(Long friendId) {
+    public Boolean deleteFriendship(Long friendId) {
         if (debtService.isExistsDebtWithUser(friendId)) {
             return false;
         }
-        final User currentUser = authenticationService.getCurrentUser();
-        currentUser.getFriends().remove(userService.getUser(friendId));
+
+        User currentUser = authenticationService.getCurrentUser();
+        User friendForDelete = userService.getUser(friendId);
+
+        currentUser.getFriends().remove(friendForDelete);
         userService.updateUser(currentUser);
 
+        friendForDelete.getFriends().remove(currentUser);
+        userService.updateUser(friendForDelete);
+
         return true;
+    }
+
+    @Override
+    public User createFriendship(Long friendId) {
+        final User currentUser = authenticationService.getCurrentUser();
+        final User newFriend = userService.getUser(friendId);
+
+        currentUser.getFriends().add(newFriend);
+        friendRepository.save(currentUser);
+
+        newFriend.getFriends().add(currentUser);
+        friendRepository.save(newFriend);
+
+        return currentUser;
+    }
+
+    @Override
+    public Boolean isFriend(Long userId) {
+        final User user = userService.getUser(userId);
+        return authenticationService.getCurrentUser().getFriends().contains(user);
     }
 }

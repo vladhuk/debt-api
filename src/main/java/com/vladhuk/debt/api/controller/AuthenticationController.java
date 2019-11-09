@@ -1,12 +1,10 @@
 package com.vladhuk.debt.api.controller;
 
 import com.vladhuk.debt.api.model.User;
-import com.vladhuk.debt.api.payload.ApiResponse;
 import com.vladhuk.debt.api.payload.JwtAuthenticationResponse;
 import com.vladhuk.debt.api.payload.LoginRequest;
 import com.vladhuk.debt.api.payload.SignUpRequest;
 import com.vladhuk.debt.api.service.AuthenticationService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +33,7 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
         if (authenticationService.isUsernameExist(signUpRequest.getUsername())) {
-            return new ResponseEntity(new ApiResponse(false, "Username is already taken!"), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
 
         final User newUser = new User(

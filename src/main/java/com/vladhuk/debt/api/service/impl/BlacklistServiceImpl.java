@@ -67,9 +67,8 @@ public class BlacklistServiceImpl implements BlacklistService {
     }
 
     @Override
-    public Boolean isBlacklistUser(Long userId) {
+    public Boolean isUsersBlacklistContainsCurrentUser(Long userId) {
         final User user = userService.getUser(userId);
-        return authenticationService.getCurrentUser().getBlacklist().contains(user);
+        return user.getBlacklist().contains(authenticationService.getCurrentUser());
     }
-
 }

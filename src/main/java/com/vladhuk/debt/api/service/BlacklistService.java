@@ -14,6 +14,6 @@ public interface BlacklistService {
 
     void deleteUserFromBlacklist(Long userId);
 
-    Boolean isBlacklistUser(Long userId);
+    Boolean isUsersBlacklistContainsCurrentUser(Long userId);
 
 }

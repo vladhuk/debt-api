@@ -4,6 +4,7 @@ import com.vladhuk.debt.api.model.Group;
 import com.vladhuk.debt.api.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GroupService {
 
@@ -17,12 +18,10 @@ public interface GroupService {
 
     void deleteGroup(Long groupId);
 
-    Group updateGroup(Group group);
+    Optional<Group> updateGroup(Group group);
 
-    Group addMember(Long groupId, User member);
+    Optional<Group> addMember(Long groupId, User member);
 
-    Group deleteMember(Long groupId, Long memberId);
-
-    Boolean isCurrentUserOwner(Group group);
+    Optional<Group> deleteMember(Long groupId, Long memberId);
 
 }

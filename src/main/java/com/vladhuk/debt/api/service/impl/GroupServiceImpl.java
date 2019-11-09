@@ -55,47 +55,46 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void deleteGroup(Long groupId) {
-        groupRepository.deleteById(groupId);
+        groupRepository.deleteByIdAndOwnerId(groupId, authenticationService.getCurrentUser().getId());
     }
 
     @Override
-    public Group updateGroup(Group group) {
-        return groupRepository.save(group);
+    public Optional<Group> updateGroup(Group group) {
+        if (Objects.equals(group.getOwner(), authenticationService.getCurrentUser())) {
+            return Optional.of(groupRepository.save(group));
+        }
+        return Optional.empty();
     }
 
     @Override
-    public Group addMember(Long groupId, User member) {
-        final Optional<Group> optionalGroup = groupRepository.findById(groupId);
-        final User foundedUser = userService.getUser(member);
+    public Optional<Group> addMember(Long groupId, User member) {
+        final User currentUser = authenticationService.getCurrentUser();
+        final User newMember = userService.getUser(member);
+        final Optional<Group> optionalGroup = groupRepository.findByIdAndOwnerId(groupId, currentUser.getId());
 
-        if (optionalGroup.isPresent() && isCurrentUserOwner(optionalGroup.get())) {
+        if (optionalGroup.isPresent()) {
             final Group group = optionalGroup.get();
-            group.getMembers().add(foundedUser);
+            group.getMembers().add(newMember);
 
-            return groupRepository.save(group);
+            return Optional.of(groupRepository.save(group));
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Group> deleteMember(Long groupId, Long memberId) {
+        final User currentUser = authenticationService.getCurrentUser();
+        final User member = userService.getUser(memberId);
+        final Optional<Group> optionalGroup = groupRepository.findByIdAndOwnerId(groupId, currentUser.getId());
+
+        if (optionalGroup.isPresent()) {
+            final Group group = optionalGroup.get();
+            group.getMembers().remove(member);
+
+            return Optional.of(groupRepository.save(group));
         }
 
-        return null;
-    }
-
-    @Override
-    public Group deleteMember(Long groupId, Long memberId) {
-        final Optional<Group> optionalGroup = groupRepository.findById(groupId);
-        final User foundedUser = userService.getUser(memberId);
-
-        if (optionalGroup.isPresent() && isCurrentUserOwner(optionalGroup.get())) {
-            final Group group = optionalGroup.get();
-            group.getMembers().remove(foundedUser);
-
-            return groupRepository.save(group);
-        }
-
-        return null;
-    }
-
-    @Override
-    public Boolean isCurrentUserOwner(Group group) {
-        return Objects.equals(group.getOwner(), authenticationService.getCurrentUser());
+        return Optional.empty();
     }
 
 }

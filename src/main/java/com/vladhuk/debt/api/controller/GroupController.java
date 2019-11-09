@@ -50,7 +50,7 @@ public class GroupController {
 
     @PostMapping("/groups/{id}/members")
     public Group addMember(@PathVariable Long id, @RequestBody User member) {
-        return groupService.addMember(id, member.getId());
+        return groupService.addMember(id, member);
     }
 
     @DeleteMapping("/groups/{groupId}/members/{memberId}")

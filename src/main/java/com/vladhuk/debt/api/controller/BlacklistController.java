@@ -28,7 +28,7 @@ public class BlacklistController {
     }
 
     @PostMapping
-    public List<User> addUserToBlacklist(@RequestBody User user) {
+    public Boolean addUserToBlacklist(@RequestBody User user) {
         return blacklistService.addUserToBlacklist(user);
     }
 

@@ -21,7 +21,7 @@ public class GroupServiceTest {
 
     private User testUser1 = new User("Name1", "Username1", "Password1");
     private User testUser2 = new User("Name2", "Username2", "Password2");
-    private User registeredAndAuthTestUser1;
+    private User registeredTestUser1;
     private User registeredTestUser2;
     private Group testGroup;
 
@@ -34,7 +34,7 @@ public class GroupServiceTest {
 
     @BeforeEach
     private void setUp() {
-        registeredAndAuthTestUser1 = authenticationService.registerUser(testUser1);
+        registeredTestUser1 = authenticationService.registerUser(testUser1);
         registeredTestUser2 = authenticationService.registerUser(testUser2);
 
         authenticationService.authenticateAndGetToken(testUser1.getUsername(), testUser1.getPassword());
@@ -66,7 +66,7 @@ public class GroupServiceTest {
 
         assertEquals(2, groups.size());
         for (Group g : groups) {
-            assertTrue(groupService.isCurrentUserOwner(g));
+            assertEquals(g.getOwner(), authenticationService.getCurrentUser());
         }
     }
 
@@ -95,7 +95,7 @@ public class GroupServiceTest {
 
     @Test
     public void createGroup_When_GroupNotExist_CreateGroup() {
-        testGroup.setOwner(registeredAndAuthTestUser1);
+        testGroup.setOwner(registeredTestUser1);
 
         final Group actualGroup = groupService.createGroup(testGroup);
 
@@ -111,7 +111,8 @@ public class GroupServiceTest {
     public void addMember_When_CurrentUserOwnerAndGroupExistsAndNewMemberExists_Expected_GroupWithNewMember() {
         final Group group = groupService.createGroup(testGroup);
 
-        final Group groupWithMember = groupService.addMember(group.getId(), registeredTestUser2);
+        final Group groupWithMember = groupService.addMember(group.getId(), registeredTestUser2).orElse(null);
+        assertNotNull(groupWithMember);
         final Group fetchedGroup = groupService.getGroup(group.getId());
 
         assertEquals(fetchedGroup, groupWithMember);
@@ -120,33 +121,19 @@ public class GroupServiceTest {
     @Test
     public void deleteMember_When_MemberExist_Expected_DeleteMember() {
         Group group = groupService.createGroup(testGroup);
-        group = groupService.addMember(group.getId(), registeredTestUser2);
+        group = groupService.addMember(group.getId(), registeredTestUser2).orElse(null);
 
-        final Group resultGroup = groupService.deleteMember(group.getId(), registeredTestUser2.getId());
+        assertNotNull(group);
 
+        final Group resultGroup = groupService.deleteMember(group.getId(), registeredTestUser2.getId()).orElse(null);
+
+        assertNotNull(resultGroup);
         assertEquals(0, resultGroup.getMembers().size());
 
         final Optional<Group> fetchedGroup = groupRepository.findById(group.getId());
 
         assertTrue(fetchedGroup.isPresent());
         assertEquals(fetchedGroup.get(), resultGroup);
-    }
-
-    @Test
-    public void isCurrentUserOwner_When_UserOwner_Expected_True() {
-        final Group group = groupService.createGroup(testGroup);
-
-        assertTrue(groupService.isCurrentUserOwner(group));
-    }
-
-    @Test
-    public void isCurrentUserOwner_When_UserNotOwner_Expected_False() {
-        final Group group = groupService.createGroup(testGroup);
-
-        SecurityContextHolder.clearContext();
-        authenticationService.authenticateAndGetToken(testUser2.getUsername(), testUser2.getPassword());
-
-        assertFalse(groupService.isCurrentUserOwner(group));
     }
 
 }

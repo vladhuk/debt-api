@@ -64,9 +64,9 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group addMember(Long groupId, Long memberId) {
+    public Group addMember(Long groupId, User member) {
         final Optional<Group> optionalGroup = groupRepository.findById(groupId);
-        final User foundedUser = userService.getUser(memberId);
+        final User foundedUser = userService.getUser(member);
 
         if (optionalGroup.isPresent() && isCurrentUserOwner(optionalGroup.get())) {
             final Group group = optionalGroup.get();

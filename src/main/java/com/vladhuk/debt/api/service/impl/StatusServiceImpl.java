@@ -19,7 +19,7 @@ public class StatusServiceImpl implements StatusService {
 
     @Override
     public Status getStatus(Status.StatusName statusName) {
-        return statusRepository.findByName(Status.StatusName.SENT)
+        return statusRepository.findByName(statusName)
                 .orElseThrow(() -> new AppException("Request status not set."));
     }
 

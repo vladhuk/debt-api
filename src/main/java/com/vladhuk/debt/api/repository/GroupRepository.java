@@ -15,4 +15,6 @@ public interface GroupRepository extends PagingAndSortingRepository<Group, Long>
 
     Optional<Group> findByIdAndOwnerId(Long id, Long ownerId);
 
+    void deleteByIdAndOwnerId(Long id, Long ownerId);
+
 }

@@ -10,8 +10,10 @@ public interface BlacklistService {
 
     List<User> getBlacklistPage(Integer pageNumber, Integer pageSize);
 
-    List<User> addUserToBlacklist(User user);
+    Boolean addUserToBlacklist(User user);
 
     void deleteUserFromBlacklist(Long userId);
+
+    Boolean isBlacklistUser(Long userId);
 
 }

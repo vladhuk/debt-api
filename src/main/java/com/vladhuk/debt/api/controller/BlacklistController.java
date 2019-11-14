@@ -2,7 +2,6 @@ package com.vladhuk.debt.api.controller;
 
 import com.vladhuk.debt.api.model.User;
 import com.vladhuk.debt.api.service.BlacklistService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,11 +28,8 @@ public class BlacklistController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addUserToBlacklist(@RequestBody User user) {
-        if (blacklistService.addUserToBlacklist(user)) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
+    public void addUserToBlacklist(@RequestBody User user) {
+        blacklistService.addUserToBlacklist(user);
     }
 
     @DeleteMapping("/{id}")

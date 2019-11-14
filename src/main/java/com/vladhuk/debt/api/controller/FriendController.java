@@ -2,7 +2,6 @@ package com.vladhuk.debt.api.controller;
 
 import com.vladhuk.debt.api.model.User;
 import com.vladhuk.debt.api.service.FriendService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,10 +28,8 @@ public class FriendController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteFriend(@PathVariable("id") Long friendId) {
-        return friendService.deleteFriendship(friendId) == null
-                ? ResponseEntity.badRequest().build()
-                : ResponseEntity.ok().build();
+    public void deleteFriend(@PathVariable("id") Long friendId) {
+        friendService.deleteFriendship(friendId);
     }
 
 }

@@ -2,11 +2,9 @@ package com.vladhuk.debt.api.controller;
 
 import com.vladhuk.debt.api.model.FriendRequest;
 import com.vladhuk.debt.api.service.FriendRequestService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/user-management/friend-requests")
@@ -46,12 +44,8 @@ public class FriendRequestController {
     }
 
     @PostMapping
-    public ResponseEntity<?> sendFriendRequest(@RequestBody FriendRequest friendRequest) {
-        final Optional<FriendRequest> requestForSend = friendRequestService.sendFriendRequest(friendRequest);
-
-        return requestForSend.isPresent()
-                ? ResponseEntity.ok(requestForSend.get())
-                : ResponseEntity.badRequest().build();
+    public FriendRequest sendFriendRequest(@RequestBody FriendRequest friendRequest) {
+        return friendRequestService.sendFriendRequest(friendRequest);
     }
 
     @PostMapping("/{requestId}/accept")

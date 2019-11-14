@@ -1,5 +1,7 @@
 package com.vladhuk.debt.api.service;
 
+import com.vladhuk.debt.api.exception.FriendRequestException;
+import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.model.FriendRequest;
 import com.vladhuk.debt.api.model.Status;
 import com.vladhuk.debt.api.model.User;
@@ -12,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.vladhuk.debt.api.model.Status.StatusName.*;
@@ -126,16 +127,15 @@ public class FriendRequestServiceTest {
         requestForSending.setComment("Comment");
         requestForSending.setStatus(rejectedStatus);
 
-        final Optional<FriendRequest> sentRequest = friendRequestService.sendFriendRequest(requestForSending);
-        assertTrue(sentRequest.isPresent());
-        assertEquals(authenticationService.getCurrentUser(), sentRequest.get().getSender());
-        assertEquals(requestForSending.getReceiver(), sentRequest.get().getReceiver());
-        assertEquals(requestForSending.getComment(), sentRequest.get().getComment());
-        assertEquals(SENT, sentRequest.get().getStatus().getName());
+        final FriendRequest sentRequest = friendRequestService.sendFriendRequest(requestForSending);
+        assertEquals(authenticationService.getCurrentUser(), sentRequest.getSender());
+        assertEquals(requestForSending.getReceiver(), sentRequest.getReceiver());
+        assertEquals(requestForSending.getComment(), sentRequest.getComment());
+        assertEquals(SENT, sentRequest.getStatus().getName());
     }
 
     @Test
-    public void sendFriendRequest_When_UserInBlackList_Expected_Null() {
+    public void sendFriendRequest_When_UserInBlackList_Expected_FriendRequestException() {
         blacklistService.addUserToBlacklist(registeredTestUser2);
 
         authenticationService.authenticateAndGetToken(testUser2.getUsername(), testUser2.getPassword());
@@ -144,18 +144,18 @@ public class FriendRequestServiceTest {
         requestForSending.setSender(registeredTestUser2);
         requestForSending.setReceiver(registeredTestUser1);
 
-        assertFalse(friendRequestService.sendFriendRequest(requestForSending).isPresent());
+        assertThrows(FriendRequestException.class, () -> friendRequestService.sendFriendRequest(requestForSending));
     }
 
     @Test
-    public void sendFriendRequest_When_UserIsFriend_Expected_Null() {
+    public void sendFriendRequest_When_UserIsFriend_Expected_FriendRequestException() {
         friendService.createFriendship(registeredTestUser2.getId());
 
         final FriendRequest requestForSending = new FriendRequest();
         requestForSending.setSender(registeredTestUser1);
         requestForSending.setReceiver(registeredTestUser2);
 
-        assertFalse(friendRequestService.sendFriendRequest(requestForSending).isPresent());
+        assertThrows(FriendRequestException.class, () -> friendRequestService.sendFriendRequest(requestForSending));
     }
 
     @Test
@@ -171,8 +171,8 @@ public class FriendRequestServiceTest {
     }
 
     @Test
-    public void confirmFriendRequest_When_StatusNotViewed_Expected_Null() {
-        assertThrows(NoSuchElementException.class, () -> friendRequestService.confirmFriendRequest(receivedRequest.getId()));
+    public void confirmFriendRequest_When_StatusNotViewed_Expected_ResourceNotFoundException() {
+        assertThrows(ResourceNotFoundException.class, () -> friendRequestService.confirmFriendRequest(receivedRequest.getId()));
     }
 
 }

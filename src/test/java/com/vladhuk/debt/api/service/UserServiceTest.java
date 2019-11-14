@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.service;
 
+import com.vladhuk.debt.api.exception.BadRequestException;
 import com.vladhuk.debt.api.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -44,10 +45,9 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getUser_ByUser_When_IdNullAndUsernameNull_Expected_Null() {
+    public void getUser_ByUser_When_IdNullAndUsernameNull_Expected_NotFoundException() {
         final User user = new User();
-
-        assertNull(userService.getUser(user));
+        assertThrows(BadRequestException.class, () -> userService.getUser(user));
     }
 
 }

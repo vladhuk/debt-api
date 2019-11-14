@@ -1,11 +1,14 @@
 package com.vladhuk.debt.api.service.impl;
 
+import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.model.Group;
 import com.vladhuk.debt.api.model.User;
 import com.vladhuk.debt.api.repository.GroupRepository;
 import com.vladhuk.debt.api.service.AuthenticationService;
 import com.vladhuk.debt.api.service.GroupService;
 import com.vladhuk.debt.api.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,8 @@ import java.util.Optional;
 @Service
 @Transactional
 public class GroupServiceImpl implements GroupService {
+
+    private static final Logger logger = LoggerFactory.getLogger(GroupServiceImpl.class);
 
     private final GroupRepository groupRepository;
     private final AuthenticationService authenticationService;
@@ -32,70 +37,74 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> getAllGroups() {
         final Long ownerId = authenticationService.getCurrentUser().getId();
+        logger.info("Fetching groups of user with id {}", ownerId);
         return groupRepository.findByOwnerId(ownerId);
     }
 
     @Override
     public List<Group> getGroupsPage(Integer pageNumber, Integer pageSize) {
         final Long ownerId = authenticationService.getCurrentUser().getId();
+        logger.info("Fetching groups page of user with id {}", ownerId);
         return groupRepository.findByOwnerId(ownerId, PageRequest.of(pageNumber, pageSize, Sort.by("title").ascending()));
     }
 
-    // TODO: Make optional
     @Override
     public Group getGroup(Long groupId) {
-        final Long ownerId = authenticationService.getCurrentUser().getId();
-        return groupRepository.findByIdAndOwnerId(groupId, ownerId).orElse(null);
+        final Long currentUserId = authenticationService.getCurrentUser().getId();
+        final Optional<Group> group = groupRepository.findByIdAndOwnerId(groupId, currentUserId);
+
+        if (group.isEmpty()) {
+            logger.error("User with id {} does not have a group with id {}", currentUserId, groupId);
+            throw new ResourceNotFoundException("User", "group id", groupId);
+        }
+
+        return group.get();
     }
 
     @Override
     public Group createGroup(Group group) {
         group.setOwner(authenticationService.getCurrentUser());
+        logger.info("Creating group: {}", group);
         return groupRepository.save(group);
     }
 
     @Override
     public void deleteGroup(Long groupId) {
+        logger.info("Deleting group with id {}", groupId);
         groupRepository.deleteByIdAndOwnerId(groupId, authenticationService.getCurrentUser().getId());
     }
 
     @Override
-    public Optional<Group> updateGroup(Group group) {
-        if (Objects.equals(group.getOwner(), authenticationService.getCurrentUser())) {
-            return Optional.of(groupRepository.save(group));
+    public Group updateGroup(Group group) {
+        final User currentUser = authenticationService.getCurrentUser();
+
+        if (!Objects.equals(group.getOwner(), currentUser)) {
+            logger.error("Current user with id {} does not have a group with id {}", currentUser.getId(), group.getId());
+            throw new ResourceNotFoundException("User", "group id", group.getId());
         }
-        return Optional.empty();
+        return groupRepository.save(group);
     }
 
     @Override
-    public Optional<Group> addMember(Long groupId, User member) {
-        final User currentUser = authenticationService.getCurrentUser();
+    public Group addMember(Long groupId, User member) {
+        final Group group = getGroup(groupId);
         final User newMember = userService.getUser(member);
-        final Optional<Group> optionalGroup = groupRepository.findByIdAndOwnerId(groupId, currentUser.getId());
 
-        if (optionalGroup.isPresent()) {
-            final Group group = optionalGroup.get();
-            group.getMembers().add(newMember);
+        logger.info("Adding member with id {} to group with id {}", newMember.getId(), groupId);
+        group.getMembers().add(newMember);
 
-            return Optional.of(groupRepository.save(group));
-        }
-        return Optional.empty();
+        return groupRepository.save(group);
     }
 
     @Override
-    public Optional<Group> deleteMember(Long groupId, Long memberId) {
-        final User currentUser = authenticationService.getCurrentUser();
+    public Group deleteMember(Long groupId, Long memberId) {
+        final Group group = getGroup(groupId);
         final User member = userService.getUser(memberId);
-        final Optional<Group> optionalGroup = groupRepository.findByIdAndOwnerId(groupId, currentUser.getId());
 
-        if (optionalGroup.isPresent()) {
-            final Group group = optionalGroup.get();
-            group.getMembers().remove(member);
+        logger.info("Deleting member with id {} to group with id {}", memberId, groupId);
+        group.getMembers().remove(member);
 
-            return Optional.of(groupRepository.save(group));
-        }
-
-        return Optional.empty();
+        return groupRepository.save(group);
     }
 
 }

@@ -111,7 +111,7 @@ public class GroupServiceTest {
     public void addMember_When_CurrentUserOwnerAndGroupExistsAndNewMemberExists_Expected_GroupWithNewMember() {
         final Group group = groupService.createGroup(testGroup);
 
-        final Group groupWithMember = groupService.addMember(group.getId(), registeredTestUser2).orElse(null);
+        final Group groupWithMember = groupService.addMember(group.getId(), registeredTestUser2);
         assertNotNull(groupWithMember);
         final Group fetchedGroup = groupService.getGroup(group.getId());
 
@@ -121,11 +121,11 @@ public class GroupServiceTest {
     @Test
     public void deleteMember_When_MemberExist_Expected_DeleteMember() {
         Group group = groupService.createGroup(testGroup);
-        group = groupService.addMember(group.getId(), registeredTestUser2).orElse(null);
+        group = groupService.addMember(group.getId(), registeredTestUser2);
 
         assertNotNull(group);
 
-        final Group resultGroup = groupService.deleteMember(group.getId(), registeredTestUser2.getId()).orElse(null);
+        final Group resultGroup = groupService.deleteMember(group.getId(), registeredTestUser2.getId());
 
         assertNotNull(resultGroup);
         assertEquals(0, resultGroup.getMembers().size());

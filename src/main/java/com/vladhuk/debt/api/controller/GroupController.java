@@ -3,11 +3,9 @@ package com.vladhuk.debt.api.controller;
 import com.vladhuk.debt.api.model.Group;
 import com.vladhuk.debt.api.model.User;
 import com.vladhuk.debt.api.service.GroupService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/user-management/groups")
@@ -46,27 +44,18 @@ public class GroupController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateGroup(@RequestBody Group group) {
-        final Optional<Group> updatedGroup = groupService.updateGroup(group);
-        return updatedGroup.isPresent()
-                ? ResponseEntity.ok(updatedGroup.get())
-                : ResponseEntity.badRequest().build();
+    public Group updateGroup(@RequestBody Group group) {
+        return groupService.updateGroup(group);
     }
 
     @PostMapping("/groups/{id}/members")
-    public ResponseEntity<?> addMember(@PathVariable Long id, @RequestBody User member) {
-        final Optional<Group> group = groupService.addMember(id, member);
-        return group.isPresent()
-                ? ResponseEntity.ok(group.get())
-                : ResponseEntity.badRequest().build();
+    public Group addMember(@PathVariable Long id, @RequestBody User member) {
+        return groupService.addMember(id, member);
     }
 
     @DeleteMapping("/groups/{groupId}/members/{memberId}")
-    public ResponseEntity<?> deleteMember(@PathVariable Long groupId, @PathVariable Long memberId) {
-        final Optional<Group> group = groupService.deleteMember(groupId, memberId);
-        return group.isPresent()
-                ? ResponseEntity.ok(group.get())
-                : ResponseEntity.badRequest().build();
+    public Group deleteMember(@PathVariable Long groupId, @PathVariable Long memberId) {
+        return groupService.deleteMember(groupId, memberId);
     }
 
 }

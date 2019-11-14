@@ -3,7 +3,6 @@ package com.vladhuk.debt.api.service;
 import com.vladhuk.debt.api.model.FriendRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FriendRequestService {
 
@@ -22,7 +21,7 @@ public interface FriendRequestService {
 
     Long countNewReceivedFriendRequests();
 
-    Optional<FriendRequest> sendFriendRequest(FriendRequest friendRequest);
+    FriendRequest sendFriendRequest(FriendRequest friendRequest);
 
     FriendRequest confirmFriendRequest(Long requestId);
 

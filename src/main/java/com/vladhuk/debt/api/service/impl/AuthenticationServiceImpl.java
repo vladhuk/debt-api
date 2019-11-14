@@ -1,6 +1,6 @@
 package com.vladhuk.debt.api.service.impl;
 
-import com.vladhuk.debt.api.exception.BadRequestException;
+import com.vladhuk.debt.api.exception.UsernameAlreadyExistException;
 import com.vladhuk.debt.api.model.Role;
 import com.vladhuk.debt.api.model.User;
 import com.vladhuk.debt.api.security.JwtTokenProvider;
@@ -55,7 +55,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public User registerUser(User user) {
         if (isUsernameExist(user.getUsername())) {
             logger.error("User with username {} already exist", user.getUsername());
-            throw new BadRequestException("User with username " + user.getUsername() + " already exist");
+            throw new UsernameAlreadyExistException("User with username " + user.getUsername() + " already exist");
         }
 
         final User newUser = new User();

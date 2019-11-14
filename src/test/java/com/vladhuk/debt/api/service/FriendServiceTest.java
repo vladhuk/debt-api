@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.service;
 
+import com.vladhuk.debt.api.exception.DebtExistsException;
 import com.vladhuk.debt.api.model.Debt;
 import com.vladhuk.debt.api.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,23 +46,23 @@ public class FriendServiceTest {
     }
 
     @Test
-    public void deleteFriendship_WhenExistsDebtWithFriend_Expected_False() {
+    public void deleteFriendship_WhenExistsDebtWithFriend_Expected_DebtExistException() {
         final Debt debt = new Debt(registeredTestUser1, registeredTestUser2, 1.0f);
         debtService.createDebt(debt);
 
         friendService.createFriendship(registeredTestUser2.getId());
 
-        assertFalse(friendService.deleteFriendship(registeredTestUser2.getId()));
+        assertThrows(DebtExistsException.class, () -> friendService.deleteFriendship(registeredTestUser2.getId()));
         assertEquals(1, userService.getUser(registeredTestUser1).getFriends().size());
         assertEquals(1, userService.getUser(registeredTestUser2).getFriends().size());
     }
 
     @Test
-    public void deleteFriendship_WhenNotExistsDebtWithFriend_Expected_True() {
+    public void deleteFriendship_WhenNotExistsDebtWithFriend_Expected_CorrectDeleting() {
         registeredTestUser1.getFriends().add(registeredTestUser2);
         userService.updateUser(registeredTestUser1);
 
-        assertTrue(friendService.deleteFriendship(registeredTestUser2.getId()));
+        friendService.deleteFriendship(registeredTestUser2.getId());
         assertEquals(0, userService.getUser(registeredTestUser1).getFriends().size());
         assertEquals(0, userService.getUser(registeredTestUser2).getFriends().size());
     }

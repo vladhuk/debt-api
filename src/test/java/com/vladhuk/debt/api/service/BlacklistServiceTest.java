@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.service;
 
+import com.vladhuk.debt.api.exception.DebtExistsException;
 import com.vladhuk.debt.api.model.Debt;
 import com.vladhuk.debt.api.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +39,7 @@ public class BlacklistServiceTest {
 
     @Test
     public void addUserToBlacklist_When_UserNotFriend_Expected_True() {
-        assertTrue(blacklistService.addUserToBlacklist(registeredTestUser2));
+        blacklistService.addUserToBlacklist(registeredTestUser2);
 
         final User currentUser = authenticationService.getCurrentUser();
         assertEquals(1, currentUser.getBlacklist().size());
@@ -46,10 +47,10 @@ public class BlacklistServiceTest {
     }
 
     @Test
-    public void addUserToBlacklist_When_UserFriendAndDebtNotExists_Expected_TrueAndDeleteFriendship() {
+    public void addUserToBlacklist_When_UserFriendAndDebtNotExists_Expected_DeleteFriendship() {
         friendService.createFriendship(registeredTestUser2.getId());
 
-        assertTrue(blacklistService.addUserToBlacklist(registeredTestUser2));
+        blacklistService.addUserToBlacklist(registeredTestUser2);
 
         final User currentUser = authenticationService.getCurrentUser();
         assertEquals(1, currentUser.getBlacklist().size());
@@ -57,12 +58,12 @@ public class BlacklistServiceTest {
     }
 
     @Test
-    public void addUserToBlacklist_When_UserFriendAndDebtExists_Expected_FalseAndNotDeletedFriendship() {
+    public void addUserToBlacklist_When_UserFriendAndDebtExists_Expected_DebtExistsException() {
         friendService.createFriendship(registeredTestUser2.getId());
 
         debtService.createDebt(new Debt(registeredTestUser1, registeredTestUser2, 0.0f));
 
-        assertFalse(blacklistService.addUserToBlacklist(registeredTestUser2));
+        assertThrows(DebtExistsException.class, () -> blacklistService.addUserToBlacklist(registeredTestUser2));
 
         final User currentUser = authenticationService.getCurrentUser();
         assertEquals(0, currentUser.getBlacklist().size());

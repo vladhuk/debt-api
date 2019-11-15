@@ -70,13 +70,16 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void deleteGroup(Long groupId) {
-        logger.info("Deleting group with id {}", groupId);
-        groupRepository.deleteByIdAndOwnerId(groupId, authenticationService.getCurrentUser().getId());
+        final Long currentUserId = authenticationService.getCurrentUser().getId();
+        logger.info("Deleting group with id {} with owner {}", groupId, currentUserId);
+        groupRepository.deleteByIdAndOwnerId(groupId, currentUserId);
     }
 
     @Override
     public Group updateGroup(Group group) {
         final User currentUser = authenticationService.getCurrentUser();
+
+        logger.info("Updating group with id {} with owner {}", group.getId(), currentUser.getId());
 
         if (!Objects.equals(group.getOwner(), currentUser)) {
             logger.error("Current user with id {} does not have a group with id {}", currentUser.getId(), group.getId());

@@ -105,6 +105,8 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         final User currentUser = authenticationService.getCurrentUser();
         final User receiver = userService.getUser(friendRequest.getReceiver());
 
+        logger.info("Sending friend request from user {} to user {}", currentUser.getId(), receiver.getId());
+
         if (friendService.isFriend(receiver.getId())) {
             logger.error("User {} can not send friend request to user with id {}, because they are friends", currentUser.getId(), receiver.getId());
             throw new FriendRequestException("Can not send request because users are friends");

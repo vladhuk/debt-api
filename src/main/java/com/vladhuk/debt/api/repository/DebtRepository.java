@@ -19,7 +19,7 @@ public interface DebtRepository extends PagingAndSortingRepository<Debt, Long> {
 
     Boolean existsByCreditorIdAndBorrowerId(Long creditorId, Long borrowerId);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("DELETE FROM Debt WHERE id = ?1 and (creditor.id = ?2 or borrower.id = ?2)")
     void deleteById_And_CreditorOrBorrowerId(Long id, Long creditorOrBorrowerId);
 

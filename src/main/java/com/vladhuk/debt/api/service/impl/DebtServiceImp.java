@@ -48,12 +48,11 @@ public class DebtServiceImp implements DebtService {
 
     @Override
     public Debt getDebt(Long id) {
-        final Long currentUserId = authenticationService.getCurrentUser().getId();
-        logger.info("Fetching debt with id {} related to user with id {}", id, currentUserId);
-        final Optional<Debt> debt = debtRepository.findByCreditorIdOrBorrowerId(currentUserId, currentUserId);
+        logger.info("Fetching debt with id {}", id);
+        final Optional<Debt> debt = debtRepository.findById(id);
 
         if (debt.isEmpty()) {
-            logger.error("Debt with id {} related to user with id {} not founded", id, currentUserId);
+            logger.error("Debt with id {} not founded", id);
             throw new ResourceNotFoundException("Debt", "id", id);
         }
 
@@ -61,7 +60,33 @@ public class DebtServiceImp implements DebtService {
     }
 
     @Override
-    public Boolean isExistsDebtWithUser(Long userId) {
+    public Debt getDebtWithUsers(Long userId1, Long userId2) {
+        logger.info("Fetching debt between users {} and {}", userId1, userId2);
+
+        Optional<Debt> debt = debtRepository.findByCreditorIdAndBorrowerId(userId1, userId2);
+
+        if (debt.isPresent()) {
+            return debt.get();
+        }
+
+        debt = debtRepository.findByCreditorIdAndBorrowerId(userId2, userId1);
+
+        if (debt.isPresent()) {
+            return debt.get();
+        }
+
+        logger.error("Debt between users {} and {} not founded", userId1, userId2);
+        throw new ResourceNotFoundException("Debt", "creditorId and borrowerId", userId1 + " and " + userId2);
+    }
+
+    @Override
+    public Boolean isExistDebtWithUsers(Long userId1, Long userId2) {
+        return debtRepository.existsByCreditorIdAndBorrowerId(userId1, userId2)
+                || debtRepository.existsByCreditorIdAndBorrowerId(userId2, userId1);
+    }
+
+    @Override
+    public Boolean isExistDebtWithUser(Long userId) {
         final Long currentUserId = authenticationService.getCurrentUser().getId();
 
         return debtRepository.existsByCreditorIdAndBorrowerId(currentUserId, userId)
@@ -75,10 +100,14 @@ public class DebtServiceImp implements DebtService {
     }
 
     @Override
+    public Debt updateDebt(Debt debt) {
+        return debtRepository.save(debt);
+    }
+
+    @Override
     public void deleteDebt(Long id) {
-        final Long currentUserId = authenticationService.getCurrentUser().getId();
-        logger.info("Deleting debt with id {} related to user with id {}", id, currentUserId);
-        debtRepository.deleteById_And_CreditorOrBorrowerId(id, currentUserId);
+        logger.info("Deleting debt with id {}", id);
+        debtRepository.deleteById(id);
     }
 
     @Override

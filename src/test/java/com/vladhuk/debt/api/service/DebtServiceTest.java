@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.service;
 
+import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.model.Debt;
 import com.vladhuk.debt.api.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,15 +37,60 @@ public class DebtServiceTest {
     }
 
     @Test
-    public void isExistsDebtWithUser_When_DebtExist_Expected_True() {
-        debtService.createDebt(testNotSavedDebt);
+    public void getDebtWithUsers_When_DebtExistsAndCurrentUserCreditor_Expected_Debt() {
+        testNotSavedDebt.setCreditor(registeredTestUser1);
+        testNotSavedDebt.setBorrower(registeredTestUser2);
 
-        assertTrue(debtService.isExistsDebtWithUser(registeredTestUser2.getId()));
+        final Debt expectedDebt = debtService.createDebt(testNotSavedDebt);
+
+        assertEquals(expectedDebt, debtService.getDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId()));
     }
 
     @Test
-    public void isExistsDebtWithUser_When_DebtNotExist_Expected_False() {
-        assertFalse(debtService.isExistsDebtWithUser(registeredTestUser2.getId()));
+    public void getDebtWithUsers_When_DebtExistsAndCurrentUserBorrower_Expected_Debt() {
+        testNotSavedDebt.setCreditor(registeredTestUser2);
+        testNotSavedDebt.setBorrower(registeredTestUser1);
+
+        final Debt expectedDebt = debtService.createDebt(testNotSavedDebt);
+
+        assertEquals(expectedDebt, debtService.getDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId()));
+    }
+
+    @Test
+    public void getDebtWithUsers_When_NoDebtBetweenUsers_Expected_ResourceNotFoundException() {
+        final User user = authenticationService.registerUser(new User("qqq", "qqq", "qqq"));
+
+        testNotSavedDebt.setCreditor(registeredTestUser1);
+        testNotSavedDebt.setBorrower(user);
+
+        debtService.createDebt(testNotSavedDebt);
+
+        assertThrows(ResourceNotFoundException.class,
+                     () -> debtService.getDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId()));
+    }
+
+    @Test
+    public void isExistDebtWithUsers_When_DebtExist_Expected_True() {
+        debtService.createDebt(testNotSavedDebt);
+
+        assertTrue(debtService.isExistDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId()));
+    }
+
+    @Test
+    public void isExistDebtWithUsers_When_DebtNotExist_Expected_False() {
+        assertFalse(debtService.isExistDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId()));
+    }
+
+    @Test
+    public void isExistDebtWithUser_When_DebtExist_Expected_True() {
+        debtService.createDebt(testNotSavedDebt);
+
+        assertTrue(debtService.isExistDebtWithUser(registeredTestUser2.getId()));
+    }
+
+    @Test
+    public void isExistDebtWithUser_When_DebtNotExist_Expected_False() {
+        assertFalse(debtService.isExistDebtWithUser(registeredTestUser2.getId()));
     }
 
     @Test

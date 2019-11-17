@@ -1,6 +1,6 @@
 package com.vladhuk.debt.api.service.impl;
 
-import com.vladhuk.debt.api.exception.FriendRequestException;
+import com.vladhuk.debt.api.exception.DebtRequestException;
 import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.model.*;
 import com.vladhuk.debt.api.repository.DebtRequestRepository;
@@ -120,7 +120,7 @@ public class DebtRequestServiceImpl implements DebtRequestService {
         orders.forEach(order -> {
             if (!friendService.isFriend(order.getReceiver().getId())) {
                 logger.error("User {} can not send debt request to user with id {}, because they are not friends", currentUser.getId(), order.getReceiver().getId());
-                throw new FriendRequestException("Can not send request because users are friends");
+                throw new DebtRequestException("Can not send request because users are not friends");
             }
             order.setReceiver(userService.getUser(order.getReceiver()));
             order.setStatus(sentStatus);
@@ -160,25 +160,25 @@ public class DebtRequestServiceImpl implements DebtRequestService {
         logger.info("Order with id {} is CONFIRMED", order.getId());
 
         final DebtRequest debtRequest = debtRequestRepository.findById(requestId).get();
-        final DebtRequest maybeConfirmedDebtRequest = changeStatusToConfirmedIfAllOrdersConfirmed(debtRequest);
 
-        if (maybeConfirmedDebtRequest.getStatus().getName() == CONFIRMED) {
-            addToBalances(maybeConfirmedDebtRequest);
+        changeStatusToConfirmedIfAllOrdersConfirmed(debtRequest);
+
+        if (debtRequest.getStatus().getName() == CONFIRMED) {
+            addToBalances(debtRequest);
         }
 
-        return debtRequestRepository.save(maybeConfirmedDebtRequest);
+        return debtRequestRepository.save(debtRequest);
     }
 
     @Override
-    public DebtRequest changeStatusToConfirmedIfAllOrdersConfirmed(DebtRequest debtRequest) {
+    public void changeStatusToConfirmedIfAllOrdersConfirmed(DebtRequest debtRequest) {
         for (Order order : debtRequest.getOrders()) {
             if (order.getStatus().getName() != CONFIRMED) {
-                return debtRequest;
+                return;
             }
         }
         debtRequest.setStatus(statusService.getStatus(CONFIRMED));
         logger.info("Debt request with id {} is CONFIRMED", debtRequest.getId());
-        return debtRequest;
     }
 
     private void addToBalances(DebtRequest debtRequest) {

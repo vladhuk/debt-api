@@ -15,7 +15,7 @@ public interface DebtRequestService {
      */
     List<DebtRequest> changeOrderStatusToViewed(List<DebtRequest> requests);
 
-    DebtRequest changeStatusToConfirmedIfAllOrdersConfirmed(DebtRequest debtRequest);
+    void changeStatusToConfirmedIfAllOrdersConfirmed(DebtRequest debtRequest);
 
     List<DebtRequest> getAllReceivedDebtRequests();
 

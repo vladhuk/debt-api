@@ -63,7 +63,7 @@ public class FriendServiceImpl implements FriendService {
             return;
         }
 
-        if (debtService.isExistsDebtWithUser(friendId)) {
+        if (debtService.isExistDebtWithUser(friendId)) {
             logger.error("Can not delete friendship between users {} and {}, because there is debt", currentUser.getId(), friendId);
             throw new DebtExistsException("Can not delete friendship");
         }

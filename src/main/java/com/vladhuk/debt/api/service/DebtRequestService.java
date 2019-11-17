@@ -10,6 +10,13 @@ public interface DebtRequestService {
 
     List<DebtRequest> getSentDebtRequestsPage(Integer pageNumber, Integer pageSize);
 
+    /**
+     * If user didn't view request before, order status is changed to VIEWED.
+     */
+    List<DebtRequest> changeOrderStatusToViewed(List<DebtRequest> requests);
+
+    DebtRequest changeStatusToConfirmedIfAllOrdersConfirmed(DebtRequest debtRequest);
+
     List<DebtRequest> getAllReceivedDebtRequests();
 
     List<DebtRequest> getReceivedDebtRequestsPage(Integer pageNumber, Integer pageSize);
@@ -18,7 +25,7 @@ public interface DebtRequestService {
 
     DebtRequest sendDebtRequest(DebtRequest debtRequest);
 
-    DebtRequest confirmDebtRequest(Long requestId);
+    DebtRequest confirmDebtRequestAndUpdateBalance(Long requestId);
 
     DebtRequest rejectDebtRequest(Long requestId);
 

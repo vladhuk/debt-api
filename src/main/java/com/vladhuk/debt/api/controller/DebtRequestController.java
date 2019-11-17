@@ -50,7 +50,7 @@ public class DebtRequestController {
 
     @PostMapping("/{requestId}/accept")
     public DebtRequest acceptDebtRequest(@PathVariable Long requestId) {
-        return debtRequestService.confirmDebtRequest(requestId);
+        return debtRequestService.confirmDebtRequestAndUpdateBalance(requestId);
     }
 
     @PostMapping("/{requestId}/reject")

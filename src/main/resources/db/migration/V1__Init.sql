@@ -73,12 +73,9 @@ create table orders_
 		primary key,
 	amount float null,
 	receiver_id bigint null,
-	sender_id bigint null,
 	status_id bigint null,
 	constraint FK7u3wre46942b7ytyrpjsxoxk2
 		foreign key (status_id) references status_ (id),
-	constraint FKi1nh1a0ysg0euw1hulkmrqtty
-		foreign key (sender_id) references users (id),
 	constraint FKi5u9gerkjrj40yqna80wdapfp
 		foreign key (receiver_id) references users (id)
 );

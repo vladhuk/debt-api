@@ -19,9 +19,6 @@ public class Order {
     private Status status;
 
     @ManyToOne
-    private User sender;
-
-    @ManyToOne
     private User receiver;
 
 }

@@ -17,8 +17,6 @@ public interface FriendRequestRepository extends PagingAndSortingRepository<Frie
 
     List<FriendRequest> findAllBySenderId(Long senderId, Pageable pageable);
 
-    Optional<FriendRequest> findByIdAndReceiverId(Long id, Long receiverId);
-
     Optional<FriendRequest> findByIdAndReceiverIdAndStatusId(Long id, Long receiverId, Long statusId);
 
     Long countAllByReceiverIdAndStatusId(Long receiverId, Long statusId);

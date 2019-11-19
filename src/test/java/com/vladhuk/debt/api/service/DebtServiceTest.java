@@ -44,6 +44,7 @@ public class DebtServiceTest {
         final Debt expectedDebt = debtService.createDebt(testNotSavedDebt);
 
         assertEquals(expectedDebt, debtService.getDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId()));
+        assertEquals(expectedDebt, debtService.getDebtWithUsers(registeredTestUser2.getId(), registeredTestUser1.getId()));
     }
 
     @Test
@@ -54,6 +55,7 @@ public class DebtServiceTest {
         final Debt expectedDebt = debtService.createDebt(testNotSavedDebt);
 
         assertEquals(expectedDebt, debtService.getDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId()));
+        assertEquals(expectedDebt, debtService.getDebtWithUsers(registeredTestUser2.getId(), registeredTestUser1.getId()));
     }
 
     @Test
@@ -70,10 +72,31 @@ public class DebtServiceTest {
     }
 
     @Test
+    public void getDebtWithUserAndCurrentUser_When_DebtExistsAndCurrentUserCreditor_Expected_Debt() {
+        testNotSavedDebt.setCreditor(registeredTestUser1);
+        testNotSavedDebt.setBorrower(registeredTestUser2);
+
+        final Debt expectedDebt = debtService.createDebt(testNotSavedDebt);
+
+        assertEquals(expectedDebt, debtService.getDebtWithUserAndCurrentUser(registeredTestUser2.getId()));
+    }
+
+    @Test
+    public void getDebtWithUserAndCurrentUser_When_DebtExistsAndCurrentUserBorrower_Expected_Debt() {
+        testNotSavedDebt.setCreditor(registeredTestUser2);
+        testNotSavedDebt.setBorrower(registeredTestUser1);
+
+        final Debt expectedDebt = debtService.createDebt(testNotSavedDebt);
+
+        assertEquals(expectedDebt, debtService.getDebtWithUserAndCurrentUser(registeredTestUser2.getId()));
+    }
+
+    @Test
     public void isExistDebtWithUsers_When_DebtExist_Expected_True() {
         debtService.createDebt(testNotSavedDebt);
 
         assertTrue(debtService.isExistDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId()));
+        assertTrue(debtService.isExistDebtWithUsers(registeredTestUser2.getId(), registeredTestUser1.getId()));
     }
 
     @Test
@@ -82,15 +105,15 @@ public class DebtServiceTest {
     }
 
     @Test
-    public void isExistDebtWithUser_When_DebtExist_Expected_True() {
+    public void isExistDebtWithUserAndCurrentUser_When_DebtExist_Expected_True() {
         debtService.createDebt(testNotSavedDebt);
 
-        assertTrue(debtService.isExistDebtWithUser(registeredTestUser2.getId()));
+        assertTrue(debtService.isExistDebtWithUserAndCurrentUser(registeredTestUser2.getId()));
     }
 
     @Test
-    public void isExistDebtWithUser_When_DebtNotExist_Expected_False() {
-        assertFalse(debtService.isExistDebtWithUser(registeredTestUser2.getId()));
+    public void isExistDebtWithUserAndCurrentUser_When_DebtNotExist_Expected_False() {
+        assertFalse(debtService.isExistDebtWithUserAndCurrentUser(registeredTestUser2.getId()));
     }
 
     @Test

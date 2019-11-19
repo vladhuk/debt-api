@@ -3,8 +3,8 @@ package com.vladhuk.debt.api.service.impl;
 import com.vladhuk.debt.api.exception.DebtRequestException;
 import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.model.*;
+import com.vladhuk.debt.api.repository.DebtOrderRepository;
 import com.vladhuk.debt.api.repository.DebtRequestRepository;
-import com.vladhuk.debt.api.repository.OrderRepository;
 import com.vladhuk.debt.api.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,16 +28,16 @@ public class DebtRequestServiceImpl implements DebtRequestService {
     private static final Logger logger = LoggerFactory.getLogger(DebtRequestRepository.class);
 
     private final DebtRequestRepository debtRequestRepository;
-    private final OrderRepository orderRepository;
+    private final DebtOrderRepository debtOrderRepository;
     private final AuthenticationService authenticationService;
     private final StatusService statusService;
     private final UserService userService;
     private final FriendService friendService;
     private final DebtService debtService;
 
-    public DebtRequestServiceImpl(DebtRequestRepository debtRequestRepository, OrderRepository orderRepository, AuthenticationService authenticationService, StatusService statusService, UserService userService, FriendService friendService, DebtService debtService) {
+    public DebtRequestServiceImpl(DebtRequestRepository debtRequestRepository, DebtOrderRepository debtOrderRepository, AuthenticationService authenticationService, StatusService statusService, UserService userService, FriendService friendService, DebtService debtService) {
         this.debtRequestRepository = debtRequestRepository;
-        this.orderRepository = orderRepository;
+        this.debtOrderRepository = debtOrderRepository;
         this.authenticationService = authenticationService;
         this.statusService = statusService;
         this.userService = userService;
@@ -67,14 +67,14 @@ public class DebtRequestServiceImpl implements DebtRequestService {
         final Status viewedStatus = statusService.getStatus(VIEWED);
 
         requests.forEach(request ->
-                              request.getOrders()
-                                      .stream()
-                                      .filter(order -> order.getStatus().getName() == SENT)
-                                      .forEach(order -> {
-                                          order.setStatus(viewedStatus);
-                                          orderRepository.save(order);
-                                      })
-                );
+                request.getOrders()
+                        .stream()
+                        .filter(order -> order.getStatus().getName() == SENT)
+                        .forEach(order -> {
+                            order.setStatus(viewedStatus);
+                            debtOrderRepository.save(order);
+                        })
+        );
         return requests;
     }
 
@@ -102,29 +102,26 @@ public class DebtRequestServiceImpl implements DebtRequestService {
 
         logger.info("Counting new received by user with id {} debt requests", currentUserId);
 
-        return orderRepository.countAllByReceiverIdAndStatusId(currentUserId, statusId);
+        return debtOrderRepository.countAllByReceiverIdAndStatusId(currentUserId, statusId);
     }
 
     @Override
     public DebtRequest sendDebtRequest(DebtRequest debtRequest) {
         final User currentUser = authenticationService.getCurrentUser();
-        final List<Order> orders = debtRequest.getOrders()
-                .stream()
-                .peek(order -> order.setReceiver(userService.getUser(order.getReceiver())))
-                .collect(Collectors.toList());
 
-        logger.info("Sending debt request from user {} to users {}", currentUser.getId(), orders.stream().map(order -> order.getReceiver().getId()).collect(Collectors.toList()));
+        logger.info("Sending debt request from user {} to users {}", currentUser.getId(), debtRequest.getOrders().stream().map(order -> order.getReceiver().getId()).collect(Collectors.toList()));
 
         final Status sentStatus = statusService.getStatus(SENT);
 
-        orders.forEach(order -> {
-            if (!friendService.isFriend(order.getReceiver().getId())) {
-                logger.error("User {} can not send debt request to user with id {}, because they are not friends", currentUser.getId(), order.getReceiver().getId());
-                throw new DebtRequestException("Can not send request because users are not friends");
-            }
-            order.setReceiver(userService.getUser(order.getReceiver()));
-            order.setStatus(sentStatus);
-        });
+        final List<Order> orders = debtRequest.getOrders().stream()
+                .map(order -> {
+                    if (!friendService.isFriend(order.getReceiver().getId())) {
+                        logger.error("User {} can not send debt request to user with id {}, because they are not friends", currentUser.getId(), order.getReceiver().getId());
+                        throw new DebtRequestException("Can not send request because users are not friends");
+                    }
+                    return new Order(order.getAmount(), sentStatus, userService.getUser(order.getReceiver()));
+                })
+                .collect(Collectors.toList());
 
         final DebtRequest requestForSave = new DebtRequest();
         requestForSave.setSender(currentUser);
@@ -139,7 +136,7 @@ public class DebtRequestServiceImpl implements DebtRequestService {
         final Long currentUserId = authenticationService.getCurrentUser().getId();
         final Long viewedStatusId = statusService.getStatus(VIEWED).getId();
         final Optional<Order> optionalOrder =
-                orderRepository.findByDebtRequestIdAndReceiverIdAndStatusId(requestId, currentUserId, viewedStatusId);
+                debtOrderRepository.findByDebtRequestIdAndReceiverIdAndStatusId(requestId, currentUserId, viewedStatusId);
 
         if (optionalOrder.isEmpty()) {
             logger.error("Order in debt request with id {} and status VIEWED with receiverId {} not founded", requestId, currentUserId);
@@ -156,7 +153,7 @@ public class DebtRequestServiceImpl implements DebtRequestService {
         final Order order = getViewedReceivedOrderByRequest(requestId);
 
         order.setStatus(statusService.getStatus(CONFIRMED));
-        orderRepository.save(order);
+        debtOrderRepository.save(order);
         logger.info("Order with id {} is CONFIRMED", order.getId());
 
         final DebtRequest debtRequest = debtRequestRepository.findById(requestId).get();
@@ -184,7 +181,7 @@ public class DebtRequestServiceImpl implements DebtRequestService {
     private void addToBalances(DebtRequest debtRequest) {
         final User sender = debtRequest.getSender();
 
-        for (Order order: debtRequest.getOrders()) {
+        for (Order order : debtRequest.getOrders()) {
             final User receiver = order.getReceiver();
 
             if (!debtService.isExistDebtWithUsers(sender.getId(), receiver.getId())) {
@@ -195,6 +192,9 @@ public class DebtRequestServiceImpl implements DebtRequestService {
                         ? order.getAmount()
                         : -order.getAmount();
                 debtService.addToBalance(debt.getId(), amount);
+                if (debtService.isBalanceZero(debt)) {
+                    debtService.deleteDebt(debt.getId());
+                }
             }
         }
     }
@@ -207,7 +207,7 @@ public class DebtRequestServiceImpl implements DebtRequestService {
 
         final Order order = getViewedReceivedOrderByRequest(requestId);
         order.setStatus(rejectedStatus);
-        orderRepository.save(order);
+        debtOrderRepository.save(order);
 
         final DebtRequest debtRequest = debtRequestRepository.findById(requestId).get();
         debtRequest.setStatus(rejectedStatus);

@@ -107,7 +107,7 @@ public class RepaymentRequestServiceImpl implements RepaymentRequestService {
 
         logger.info("Sending debt request from user {} to user {}", currentUser.getId(), receiver.getId());
 
-        if (!debtService.isExistDebtWithUser(receiver.getId())) {
+        if (!debtService.isExistDebtWithUserAndCurrentUser(receiver.getId())) {
             logger.error("User {} can not repayment debt request to user with id {}, because they don't have debt", currentUser.getId(), receiver.getId());
             throw new RepaymentRequestException("Can not send request because users don't have debt");
         }
@@ -149,7 +149,7 @@ public class RepaymentRequestServiceImpl implements RepaymentRequestService {
 
         request.setStatus(statusService.getStatus(CONFIRMED));
 
-        final Debt debt = debtService.getDebt(request.getSender().getId());
+        final Debt debt = debtService.getDebtWithUserAndCurrentUser(request.getSender().getId());
         final Float amount = Objects.equals(debt.getCreditor().getId(), request.getSender().getId())
                 ? request.getOrder().getAmount()
                 : -request.getOrder().getAmount();

@@ -10,6 +10,11 @@ public interface RepaymentRequestService {
 
     List<RepaymentRequest> getSentRepaymentRequestsPage(Integer pageNumber, Integer pageSize);
 
+    /**
+     * If user didn't view request before, status is changed to VIEWED.
+     */
+    List<RepaymentRequest> changeStatusToViewed(List<RepaymentRequest> requests);
+
     List<RepaymentRequest> getAllReceivedRepaymentRequests();
 
     List<RepaymentRequest> getReceivedRepaymentRequestsPage(Integer pageNumber, Integer pageSize);
@@ -18,7 +23,7 @@ public interface RepaymentRequestService {
 
     RepaymentRequest sendRepaymentRequest(RepaymentRequest repaymentRequest);
 
-    RepaymentRequest confirmRepaymentRequest(Long requestId);
+    RepaymentRequest confirmRepaymentRequestAndUpdateBalance(Long requestId);
 
     RepaymentRequest rejectRepaymentRequest(Long requestId);
 

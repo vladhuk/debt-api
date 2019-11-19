@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.vladhuk.debt.api.model.Status.StatusName.*;
 
@@ -63,14 +62,15 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     @Override
     public List<FriendRequest> changeStatusToViewed(List<FriendRequest> requests) {
         final Status viewedStatus = statusService.getStatus(VIEWED);
-        return requests.stream()
-                .peek(request -> {
-                    if (request.getStatus().getName() == SENT) {
-                        request.setStatus(viewedStatus);
-                        friendRequestRepository.save(request);
-                    }
-                })
-                .collect(Collectors.toList());
+
+        requests.stream()
+                .filter(request -> request.getStatus().getName() == SENT)
+                .forEach(request -> {
+                    request.setStatus(viewedStatus);
+                    friendRequestRepository.save(request);
+                });
+
+        return requests;
     }
 
     @Override

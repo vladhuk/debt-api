@@ -3,8 +3,8 @@ package com.vladhuk.debt.api.service;
 import com.vladhuk.debt.api.exception.DebtRequestException;
 import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.model.*;
+import com.vladhuk.debt.api.repository.DebtOrderRepository;
 import com.vladhuk.debt.api.repository.DebtRequestRepository;
-import com.vladhuk.debt.api.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class DebtRequestServiceTest {
     @Autowired
     private DebtRequestRepository debtRequestRepository;
     @Autowired
-    private OrderRepository orderRepository;
+    private DebtOrderRepository debtOrderRepository;
 
     private User testUser1 = new User("Name1", "Username1", "Password1");
     private User testUser2 = new User("Name2", "Username2", "Password2");
@@ -145,7 +145,7 @@ public class DebtRequestServiceTest {
         friendService.createFriendship(registeredTestUser2.getId());
 
         final Order order = new Order(3f, viewedStatus, registeredTestUser1);
-        orderRepository.save(order);
+        debtOrderRepository.save(order);
 
         final DebtRequest debtRequest = new DebtRequest();
         debtRequest.setStatus(sentStatus);
@@ -171,7 +171,7 @@ public class DebtRequestServiceTest {
         debtService.createDebt(new Debt(registeredTestUser2, registeredTestUser1, 5f));
 
         final Order order = new Order(3f, viewedStatus, registeredTestUser1);
-        orderRepository.save(order);
+        debtOrderRepository.save(order);
 
         final DebtRequest debtRequest = new DebtRequest();
         debtRequest.setStatus(sentStatus);
@@ -197,7 +197,7 @@ public class DebtRequestServiceTest {
         debtService.createDebt(new Debt(registeredTestUser1, registeredTestUser2, 5f));
 
         final Order order = new Order(3f, viewedStatus, registeredTestUser1);
-        orderRepository.save(order);
+        debtOrderRepository.save(order);
 
         final DebtRequest debtRequest = new DebtRequest();
         debtRequest.setStatus(sentStatus);
@@ -221,9 +221,9 @@ public class DebtRequestServiceTest {
         friendService.createFriendship(registeredTestUser2.getId());
 
         final Order order1 = new Order(3f, viewedStatus, registeredTestUser1);
-        orderRepository.save(order1);
+        debtOrderRepository.save(order1);
         final Order order2 = new Order(3f, viewedStatus, authenticationService.registerUser(new User("qqq", "qqq", "qqq")));
-        orderRepository.save(order2);
+        debtOrderRepository.save(order2);
 
         final DebtRequest debtRequest = new DebtRequest();
         debtRequest.setStatus(sentStatus);
@@ -241,7 +241,7 @@ public class DebtRequestServiceTest {
     @Test
     public void rejectDebtRequestAndUpdateBalance_When_OrderStatusViewed_Expected_RejectedRequest() {
         final Order order = new Order(3f, viewedStatus, registeredTestUser1);
-        orderRepository.save(order);
+        debtOrderRepository.save(order);
 
         final DebtRequest debtRequest = new DebtRequest();
         debtRequest.setStatus(sentStatus);

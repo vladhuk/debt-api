@@ -25,7 +25,7 @@ public class DebtRequestRepositoryTest {
     @Autowired
     private DebtRequestRepository debtRequestRepository;
     @Autowired
-    private OrderRepository orderRepository;
+    private DebtOrderRepository debtOrderRepository;
 
     private User testUser1 = new User("Name1", "Username1", "Password1");
     private User testUser2 = new User("Name2", "Username2", "Password2");
@@ -42,8 +42,8 @@ public class DebtRequestRepositoryTest {
 
     @Test
     public void findAllByReceiverId_When_RequestExist_Expected_ListWithRequest() {
-        final Order orderWithoutCurrentUser = orderRepository.save(new Order(0f, null, registeredTestUser2));
-        final Order orderWithCurrentUser = orderRepository.save(new Order(0f, null, registeredTestUser1));
+        final Order orderWithoutCurrentUser = debtOrderRepository.save(new Order(0f, null, registeredTestUser2));
+        final Order orderWithCurrentUser = debtOrderRepository.save(new Order(0f, null, registeredTestUser1));
 
         DebtRequest requestWithoutCurrentUserReceiver = new DebtRequest();
         requestWithoutCurrentUserReceiver.setSender(registeredTestUser1);

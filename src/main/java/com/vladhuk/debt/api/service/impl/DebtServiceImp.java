@@ -80,17 +80,19 @@ public class DebtServiceImp implements DebtService {
     }
 
     @Override
+    public Debt getDebtWithUserAndCurrentUser(Long userId) {
+        return getDebtWithUsers(authenticationService.getCurrentUser().getId(), userId);
+    }
+
+    @Override
     public Boolean isExistDebtWithUsers(Long userId1, Long userId2) {
         return debtRepository.existsByCreditorIdAndBorrowerId(userId1, userId2)
                 || debtRepository.existsByCreditorIdAndBorrowerId(userId2, userId1);
     }
 
     @Override
-    public Boolean isExistDebtWithUser(Long userId) {
-        final Long currentUserId = authenticationService.getCurrentUser().getId();
-
-        return debtRepository.existsByCreditorIdAndBorrowerId(currentUserId, userId)
-                || debtRepository.existsByCreditorIdAndBorrowerId(userId, currentUserId);
+    public Boolean isExistDebtWithUserAndCurrentUser(Long userId) {
+        return isExistDebtWithUsers(authenticationService.getCurrentUser().getId(), userId);
     }
 
     @Override

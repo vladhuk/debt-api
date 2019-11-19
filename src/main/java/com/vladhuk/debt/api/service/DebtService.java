@@ -14,9 +14,11 @@ public interface DebtService {
 
     Debt getDebtWithUsers(Long userId1, Long userId2);
 
+    Debt getDebtWithUserAndCurrentUser(Long userId);
+
     Boolean isExistDebtWithUsers(Long userId1, Long userId2);
 
-    Boolean isExistDebtWithUser(Long userId);
+    Boolean isExistDebtWithUserAndCurrentUser(Long userId);
 
     Debt createDebt(Debt debt);
 

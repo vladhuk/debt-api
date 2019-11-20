@@ -21,6 +21,8 @@ public interface RepaymentRequestService {
 
     Long countNewReceivedRepaymentRequests();
 
+    void deleteSentRepaymentRequestIfNotConfirmedOrRejected(Long requestId);
+
     RepaymentRequest sendRepaymentRequest(RepaymentRequest repaymentRequest);
 
     RepaymentRequest confirmRepaymentRequestAndUpdateBalance(Long requestId);

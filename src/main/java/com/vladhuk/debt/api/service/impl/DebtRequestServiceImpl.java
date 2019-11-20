@@ -106,6 +106,21 @@ public class DebtRequestServiceImpl implements DebtRequestService {
     }
 
     @Override
+    public void deleteSentDebtRequestIfNotConfirmedOrRejected(Long requestId) {
+        final Long currentUserId = authenticationService.getCurrentUser().getId();
+        final Optional<DebtRequest> debtRequest = debtRequestRepository.findByIdAndSenderId(requestId, currentUserId);
+
+        logger.info("Deleting debt request with id {}", requestId);
+
+        if (debtRequest.isEmpty() || debtRequest.get().getStatus().getName() == CONFIRMED
+                || debtRequest.get().getStatus().getName() == REJECTED) {
+            logger.error("Not rejected or confirmed debt request with id {} and sender id {} not founded", requestId, currentUserId);
+            throw new ResourceNotFoundException("Not rejected or confirmed debt request", "id", requestId);
+        }
+        debtRequestRepository.deleteById(requestId);
+    }
+
+    @Override
     public DebtRequest sendDebtRequest(DebtRequest debtRequest) {
         final User currentUser = authenticationService.getCurrentUser();
 

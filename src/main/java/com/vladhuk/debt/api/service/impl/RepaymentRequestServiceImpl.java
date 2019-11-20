@@ -101,6 +101,21 @@ public class RepaymentRequestServiceImpl implements RepaymentRequestService {
     }
 
     @Override
+    public void deleteSentRepaymentRequestIfNotConfirmedOrRejected(Long requestId) {
+        final Long currentUserId = authenticationService.getCurrentUser().getId();
+        final Optional<RepaymentRequest> repaymentRequest = repaymentRequestRepository.findByIdAndSenderId(requestId, currentUserId);
+
+        logger.info("Deleting repayment request with id {}", requestId);
+
+        if (repaymentRequest.isEmpty() || repaymentRequest.get().getStatus().getName() == CONFIRMED
+                || repaymentRequest.get().getStatus().getName() == REJECTED) {
+            logger.error("Not rejected or confirmed repayment request with id {} and sender id {} not founded", requestId, currentUserId);
+            throw new ResourceNotFoundException("Not rejected or confirmed repayment request", "id", requestId);
+        }
+        repaymentRequestRepository.deleteById(requestId);
+    }
+
+    @Override
     public RepaymentRequest sendRepaymentRequest(RepaymentRequest repaymentRequest) {
         final User currentUser = authenticationService.getCurrentUser();
         final User receiver = userService.getUser(repaymentRequest.getOrder().getReceiver());

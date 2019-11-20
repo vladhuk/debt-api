@@ -101,6 +101,21 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
+    public void deleteSentFriendRequestIfNotConfirmedOrRejected(Long requestId) {
+        final Long currentUserId = authenticationService.getCurrentUser().getId();
+        final Optional<FriendRequest> friendRequest = friendRequestRepository.findByIdAndSenderId(requestId, currentUserId);
+
+        logger.info("Deleting friend request with id {}", requestId);
+
+        if (friendRequest.isEmpty() || friendRequest.get().getStatus().getName() == CONFIRMED
+                || friendRequest.get().getStatus().getName() == REJECTED) {
+            logger.error("Not rejected or confirmed friend request with id {} and sender id {} not founded", requestId, currentUserId);
+            throw new ResourceNotFoundException("Not rejected or confirmed friend request", "id", requestId);
+        }
+        friendRequestRepository.deleteById(requestId);
+    }
+
+    @Override
     public FriendRequest sendFriendRequest(FriendRequest friendRequest) {
         final User currentUser = authenticationService.getCurrentUser();
         final User receiver = userService.getUser(friendRequest.getReceiver());

@@ -21,6 +21,8 @@ public interface FriendRequestService {
 
     Long countNewReceivedFriendRequests();
 
+    void deleteSentFriendRequestIfNotConfirmedOrRejected(Long requestId);
+
     FriendRequest sendFriendRequest(FriendRequest friendRequest);
 
     FriendRequest confirmFriendRequest(Long requestId);

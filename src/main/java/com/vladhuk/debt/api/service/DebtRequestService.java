@@ -23,6 +23,8 @@ public interface DebtRequestService {
 
     Long countNewReceivedDebtRequests();
 
+    void deleteSentDebtRequestIfNotConfirmedOrRejected(Long requestId);
+
     DebtRequest sendDebtRequest(DebtRequest debtRequest);
 
     DebtRequest confirmDebtRequestAndUpdateBalance(Long requestId);

@@ -1,10 +1,12 @@
 package com.vladhuk.debt.api.service.impl;
 
 import com.vladhuk.debt.api.exception.ResourceNotFoundException;
+import com.vladhuk.debt.api.exception.UserNotFriendException;
 import com.vladhuk.debt.api.model.Group;
 import com.vladhuk.debt.api.model.User;
 import com.vladhuk.debt.api.repository.GroupRepository;
 import com.vladhuk.debt.api.service.AuthenticationService;
+import com.vladhuk.debt.api.service.FriendService;
 import com.vladhuk.debt.api.service.GroupService;
 import com.vladhuk.debt.api.service.UserService;
 import org.slf4j.Logger;
@@ -27,11 +29,13 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final AuthenticationService authenticationService;
     private final UserService userService;
+    private final FriendService friendService;
 
-    public GroupServiceImpl(GroupRepository groupRepository, AuthenticationService authenticationService, UserService userService) {
+    public GroupServiceImpl(GroupRepository groupRepository, AuthenticationService authenticationService, UserService userService, FriendService friendService) {
         this.groupRepository = groupRepository;
         this.authenticationService = authenticationService;
         this.userService = userService;
+        this.friendService = friendService;
     }
 
     @Override
@@ -94,6 +98,12 @@ public class GroupServiceImpl implements GroupService {
         final User newMember = userService.getUser(member);
 
         logger.info("Adding member with id {} to group with id {}", newMember.getId(), groupId);
+
+        if (!friendService.isFriend(newMember.getId())) {
+            logger.info("User with id {} can not add member with id {} to group with id {}, because he is not friend", group.getOwner().getId(), group.getId(), newMember.getId());
+            throw new UserNotFriendException("Can not add to group. Users " + group.getOwner().getId() + " and " + newMember.getId() + " are not friends");
+        }
+
         group.getMembers().add(newMember);
 
         return groupRepository.save(group);

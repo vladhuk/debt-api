@@ -43,6 +43,11 @@ public class FriendRequestController {
         return friendRequestService.countNewReceivedFriendRequests();
     }
 
+    @DeleteMapping("/sent/{id}")
+    public void deleteSentFriendRequestIfNotConfirmedOrRejected(@PathVariable Long id) {
+        friendRequestService.deleteSentFriendRequestIfNotConfirmedOrRejected(id);
+    }
+
     @PostMapping
     public FriendRequest sendFriendRequest(@RequestBody FriendRequest friendRequest) {
         return friendRequestService.sendFriendRequest(friendRequest);

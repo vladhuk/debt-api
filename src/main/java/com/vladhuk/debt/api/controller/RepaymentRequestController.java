@@ -43,6 +43,11 @@ public class RepaymentRequestController {
         return repaymentRequestService.countNewReceivedRepaymentRequests();
     }
 
+    @DeleteMapping("/sent/{id}")
+    public void deleteSentRepaymentRequestIfNotConfirmedOrRejected(@PathVariable Long id) {
+        repaymentRequestService.deleteSentRepaymentRequestIfNotConfirmedOrRejected(id);
+    }
+
     @PostMapping
     public RepaymentRequest sendRepaymentRequest(@RequestBody RepaymentRequest repaymentRequest) {
         return repaymentRequestService.sendRepaymentRequest(repaymentRequest);

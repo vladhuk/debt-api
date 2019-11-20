@@ -43,6 +43,11 @@ public class DebtRequestController {
         return debtRequestService.countNewReceivedDebtRequests();
     }
 
+    @DeleteMapping("/sent/{id}")
+    public void deleteSentDebtRequestIfNotConfirmedOrRejected(@PathVariable Long id) {
+        debtRequestService.deleteSentDebtRequestIfNotConfirmedOrRejected(id);
+    }
+
     @PostMapping
     public DebtRequest sendDebtRequest(@RequestBody DebtRequest debtRequest) {
         return debtRequestService.sendDebtRequest(debtRequest);

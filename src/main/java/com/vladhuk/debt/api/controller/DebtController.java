@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/debt-management/debts")
+@RequestMapping("/debts")
 public class DebtController {
 
     private DebtService debtService;

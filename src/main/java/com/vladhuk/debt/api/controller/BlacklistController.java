@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user-management/blacklist")
+@RequestMapping("/blacklist")
 public class BlacklistController {
 
     private BlacklistService blacklistService;

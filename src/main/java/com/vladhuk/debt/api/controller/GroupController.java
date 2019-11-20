@@ -48,12 +48,12 @@ public class GroupController {
         return groupService.updateGroup(group);
     }
 
-    @PostMapping("/groups/{id}/members")
+    @PostMapping("/{id}/members")
     public Group addMember(@PathVariable Long id, @RequestBody User member) {
         return groupService.addMember(id, member);
     }
 
-    @DeleteMapping("/groups/{groupId}/members/{memberId}")
+    @DeleteMapping("/{groupId}/members/{memberId}")
     public Group deleteMember(@PathVariable Long groupId, @PathVariable Long memberId) {
         return groupService.deleteMember(groupId, memberId);
     }

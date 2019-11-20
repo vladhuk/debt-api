@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DebtRequestRepository extends PagingAndSortingRepository<DebtRequest, Long> {
 
@@ -21,5 +22,7 @@ public interface DebtRequestRepository extends PagingAndSortingRepository<DebtRe
     List<DebtRequest> findAllBySenderId(Long senderId);
 
     List<DebtRequest> findAllBySenderId(Long senderId, Pageable pageable);
+
+    Optional<DebtRequest> findByIdAndSenderId(Long id, Long senderId);
 
 }

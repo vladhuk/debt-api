@@ -23,4 +23,6 @@ public interface FriendRequestRepository extends PagingAndSortingRepository<Frie
 
     Long countAllByReceiverIdAndStatusId(Long receiverId, Long statusId);
 
+    void deleteAllBySenderIdAndReceiverIdAndStatusId(Long senderId, Long receiverId, Long statusId);
+
 }

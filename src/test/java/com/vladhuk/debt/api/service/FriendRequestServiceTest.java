@@ -159,11 +159,11 @@ public class FriendRequestServiceTest {
     }
 
     @Test
-    public void confirmFriendRequest_When_StatusViewed_Expected_Accepted() {
+    public void confirmFriendRequestAndDeleteSameViewed_When_StatusViewed_Expected_Accepted() {
         receivedRequest.setStatus(viewedStatus);
         receivedRequest = friendRequestRepository.save(receivedRequest);
 
-        final FriendRequest confirmedRequest = friendRequestService.confirmFriendRequest(receivedRequest.getId());
+        final FriendRequest confirmedRequest = friendRequestService.confirmFriendRequestAndDeleteSameViewed(receivedRequest.getId());
         assertEquals(CONFIRMED, confirmedRequest.getStatus().getName());
 
         receivedRequest.setStatus(confirmedStatus);
@@ -171,8 +171,56 @@ public class FriendRequestServiceTest {
     }
 
     @Test
-    public void confirmFriendRequest_When_StatusNotViewed_Expected_ResourceNotFoundException() {
-        assertThrows(ResourceNotFoundException.class, () -> friendRequestService.confirmFriendRequest(receivedRequest.getId()));
+    public void confirmFriendRequestAndDeleteSameViewed_When_StatusNotViewed_Expected_ResourceNotFoundException() {
+        assertThrows(ResourceNotFoundException.class, () -> friendRequestService.confirmFriendRequestAndDeleteSameViewed(receivedRequest.getId()));
+    }
+
+    @Test
+    public void confirmFriendRequestAndDeleteSameViewed_When_ViewedRequestsExistsAndUsersNotFriends_Expected_DeleteSameRequests() {
+        FriendRequest friendRequest1 = new FriendRequest();
+        friendRequest1.setStatus(viewedStatus);
+        friendRequest1.setSender(registeredTestUser2);
+        friendRequest1.setReceiver(registeredTestUser1);
+        friendRequest1 = friendRequestRepository.save(friendRequest1);
+        final FriendRequest friendRequest2 = new FriendRequest();
+        friendRequest2.setStatus(sentStatus);
+        friendRequest2.setSender(registeredTestUser1);
+        friendRequest2.setReceiver(registeredTestUser2);
+        friendRequestRepository.save(friendRequest2);
+
+        friendRequestService.confirmFriendRequestAndDeleteSameViewed(friendRequest1.getId());
+
+        final List<FriendRequest> receivedFriendRequests = friendRequestRepository.findAllByReceiverId(registeredTestUser1.getId());
+        assertEquals(1, receivedFriendRequests.size());
+        assertEquals(CONFIRMED, receivedFriendRequests.get(0).getStatus().getName());
+
+        final List<FriendRequest> sentFriendRequests = friendRequestRepository.findAllBySenderId(registeredTestUser1.getId());
+        assertEquals(0, sentFriendRequests.size());
+    }
+
+    @Test
+    public void confirmFriendRequestAndDeleteSameViewed_When_ViewedRequestsExistsAndUsersFriends_Expected_DeleteRequestAndSame() {
+        friendService.createFriendship(registeredTestUser2.getId());
+
+        final FriendRequest friendRequest1 = new FriendRequest();
+        friendRequest1.setStatus(viewedStatus);
+        friendRequest1.setSender(registeredTestUser2);
+        friendRequest1.setReceiver(registeredTestUser1);
+        final FriendRequest savedFriendRequest1 = friendRequestRepository.save(friendRequest1);
+        final FriendRequest friendRequest2 = new FriendRequest();
+        friendRequest2.setStatus(sentStatus);
+        friendRequest2.setSender(registeredTestUser1);
+        friendRequest2.setReceiver(registeredTestUser2);
+        friendRequestRepository.save(friendRequest2);
+
+        assertThrows(FriendRequestException.class,
+                () -> friendRequestService.confirmFriendRequestAndDeleteSameViewed(savedFriendRequest1.getId()));
+
+        final List<FriendRequest> receivedFriendRequests = friendRequestRepository.findAllByReceiverId(registeredTestUser1.getId());
+        assertEquals(0, receivedFriendRequests.size());
+
+        final List<FriendRequest> sentFriendRequests = friendRequestRepository.findAllBySenderId(registeredTestUser2.getId());
+        assertEquals(0, sentFriendRequests.size());
     }
 
 }

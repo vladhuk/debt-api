@@ -156,13 +156,42 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
-    public FriendRequest confirmFriendRequest(Long requestId) {
+    public FriendRequest confirmFriendRequestAndDeleteSameViewed(Long requestId) {
         logger.info("Confirming friend request with id {}", requestId);
 
         final FriendRequest friendRequest = getViewedReceivedFriendRequest(requestId);
         friendRequest.setStatus(statusService.getStatus(CONFIRMED));
-        friendService.createFriendship(friendRequest.getSender().getId());
-        return friendRequestRepository.save(friendRequest);
+
+        final FriendRequest savedFriendRequest = friendRequestRepository.save(friendRequest);
+        final Long senderId = savedFriendRequest.getSender().getId();
+        final Long receiverId = savedFriendRequest.getReceiver().getId();
+
+        deleteNotConfirmedAndNotRejectedFriendRequests(senderId, receiverId);
+
+        if (friendService.isFriend(senderId)) {
+            friendRequestRepository.deleteById(savedFriendRequest.getId());
+            logger.error("Can not confirm friend request {}. User {} already have friendship with user {}", savedFriendRequest.getId(), senderId, receiverId);
+            throw new FriendRequestException("Users " + senderId + " and " + receiverId + " already friends");
+        }
+
+        friendService.createFriendship(senderId);
+
+        return savedFriendRequest;
+    }
+
+    private void deleteNotConfirmedAndNotRejectedFriendRequests(Long senderId, Long receiverId) {
+        friendRequestRepository.deleteAllBySenderIdAndReceiverIdAndStatusId(
+                senderId, receiverId, statusService.getStatus(VIEWED).getId()
+        );
+        friendRequestRepository.deleteAllBySenderIdAndReceiverIdAndStatusId(
+                senderId, receiverId, statusService.getStatus(SENT).getId()
+        );
+        friendRequestRepository.deleteAllBySenderIdAndReceiverIdAndStatusId(
+                receiverId, senderId, statusService.getStatus(VIEWED).getId()
+        );
+        friendRequestRepository.deleteAllBySenderIdAndReceiverIdAndStatusId(
+                receiverId, senderId, statusService.getStatus(SENT).getId()
+        );
     }
 
     @Override

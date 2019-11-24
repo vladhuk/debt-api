@@ -25,7 +25,7 @@ public interface FriendRequestService {
 
     FriendRequest sendFriendRequest(FriendRequest friendRequest);
 
-    FriendRequest confirmFriendRequest(Long requestId);
+    FriendRequest confirmFriendRequestAndDeleteSameViewed(Long requestId);
 
     FriendRequest rejectFriendRequest(Long requestId);
 

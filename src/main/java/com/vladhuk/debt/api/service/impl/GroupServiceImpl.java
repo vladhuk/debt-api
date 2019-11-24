@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.service.impl;
 
+import com.vladhuk.debt.api.exception.GroupException;
 import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.exception.UserNotFriendException;
 import com.vladhuk.debt.api.model.Group;
@@ -100,8 +101,12 @@ public class GroupServiceImpl implements GroupService {
         logger.info("Adding member with id {} to group with id {}", newMember.getId(), groupId);
 
         if (!friendService.isFriend(newMember.getId())) {
-            logger.info("User with id {} can not add member with id {} to group with id {}, because he is not friend", group.getOwner().getId(), group.getId(), newMember.getId());
+            logger.error("User with id {} can not add member with id {} to group with id {}, because he is not friend", group.getOwner().getId(), group.getId(), newMember.getId());
             throw new UserNotFriendException("Can not add to group. Users " + group.getOwner().getId() + " and " + newMember.getId() + " are not friends");
+        }
+        if (group.getMembers().contains(newMember)) {
+            logger.error("Group with id {} already contains user with id {}", group.getId(), newMember.getId());
+            throw new GroupException("Group " +  group.getId() + " already have member " + newMember.getId());
         }
 
         group.getMembers().add(newMember);

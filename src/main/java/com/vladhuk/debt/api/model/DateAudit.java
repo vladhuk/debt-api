@@ -16,12 +16,12 @@ import java.time.LocalDateTime;
 public abstract class DateAudit implements Serializable {
 
     @CreatedDate
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 

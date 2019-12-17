@@ -7,11 +7,14 @@ import com.vladhuk.debt.api.service.BlacklistService;
 import com.vladhuk.debt.api.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller("/users")
+
+@RestController
+@RequestMapping("/users")
 public class UserController {
 
     private final static Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -26,7 +29,24 @@ public class UserController {
         this.blacklistService = blacklistService;
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/current")
+    public User getCurrentUser() {
+        return authenticationService.getCurrentUser();
+    }
+
+    @GetMapping("/id/{id}")
+    public User getUserById(@PathVariable Long id) {
+        final User user = userService.getUser(id);
+
+        if (blacklistService.isUsersBlacklistContainsCurrentUser(user.getId())) {
+            logger.error("Can not fetch user with id {}, because he has user with id {} in blacklist", id, user.getId());
+            throw new ResourceNotFoundException("User", "id", id);
+        }
+
+        return user;
+    }
+
+    @GetMapping("/username/{username}")
     public User getUserByUsername(@PathVariable String username) {
         final User user = userService.getUser(username);
 

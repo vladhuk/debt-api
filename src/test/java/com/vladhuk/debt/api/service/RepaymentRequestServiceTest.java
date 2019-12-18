@@ -38,7 +38,7 @@ public class RepaymentRequestServiceTest {
     private User registeredTestUser2;
     private Status sentStatus;
     private Status viewedStatus;
-    private Status confirmedStatus;
+    private Status acceptedStatus;
     private Status rejectedStatus;
     private Debt testNotSavedDebt;
 
@@ -51,7 +51,7 @@ public class RepaymentRequestServiceTest {
 
         sentStatus = statusService.getStatus(SENT);
         viewedStatus = statusService.getStatus(VIEWED);
-        confirmedStatus = statusService.getStatus(CONFIRMED);
+        acceptedStatus = statusService.getStatus(ACCEPTED);
         rejectedStatus = statusService.getStatus(REJECTED);
 
         testNotSavedDebt = new Debt(registeredTestUser1, registeredTestUser2, 5f);
@@ -86,7 +86,7 @@ public class RepaymentRequestServiceTest {
     }
 
     @Test
-    public void confirmRepaymentRequestAndUpdateBalance_When_ExistNotViewedRequest_Expected_ResourceNotFoundException() {
+    public void acceptRepaymentRequestAndUpdateBalance_When_ExistNotViewedRequest_Expected_ResourceNotFoundException() {
         final RepaymentRequest notSentRepaymentRequest = new RepaymentRequest();
         notSentRepaymentRequest.setOrder(
                 repaymentOrderRepository.save(new Order(5f, sentStatus, registeredTestUser2))
@@ -96,11 +96,11 @@ public class RepaymentRequestServiceTest {
         final RepaymentRequest savedRequest = repaymentRequestRepository.save(notSentRepaymentRequest);
 
         assertThrows(ResourceNotFoundException.class,
-                     () -> repaymentRequestService.confirmRepaymentRequestAndUpdateBalance(savedRequest.getId()));
+                     () -> repaymentRequestService.acceptRepaymentRequestAndUpdateBalance(savedRequest.getId()));
     }
 
     @Test
-    public void confirmRepaymentRequestAndUpdateBalance_When_ViewedRequestAndDebtExistWithCurrentUserCreditor_Expected_PlusDebtBalance() {
+    public void acceptRepaymentRequestAndUpdateBalance_When_ViewedRequestAndDebtExistWithCurrentUserCreditor_Expected_PlusDebtBalance() {
         testNotSavedDebt.setCreditor(registeredTestUser1);
         testNotSavedDebt.setBorrower(registeredTestUser2);
         debtService.createDebt(testNotSavedDebt);
@@ -113,9 +113,9 @@ public class RepaymentRequestServiceTest {
         notSentRequest.setStatus(viewedStatus);
         final RepaymentRequest savedRequest = repaymentRequestRepository.save(notSentRequest);
 
-        final RepaymentRequest confirmedRequest = repaymentRequestService.confirmRepaymentRequestAndUpdateBalance(savedRequest.getId());
+        final RepaymentRequest acceptedRequest = repaymentRequestService.acceptRepaymentRequestAndUpdateBalance(savedRequest.getId());
 
-        assertEquals(CONFIRMED, confirmedRequest.getStatus().getName());
+        assertEquals(ACCEPTED, acceptedRequest.getStatus().getName());
 
         final Debt debt = debtService.getDebtWithUserAndCurrentUser(registeredTestUser2.getId());
 
@@ -123,7 +123,7 @@ public class RepaymentRequestServiceTest {
     }
 
     @Test
-    public void confirmRepaymentRequestAndUpdateBalance_When_ViewedRequestAndDebtExistWithCurrentUserBorrower_Expected_MinusDebtBalance() {
+    public void acceptRepaymentRequestAndUpdateBalance_When_ViewedRequestAndDebtExistWithCurrentUserBorrower_Expected_MinusDebtBalance() {
         testNotSavedDebt.setCreditor(registeredTestUser2);
         testNotSavedDebt.setBorrower(registeredTestUser1);
         debtService.createDebt(testNotSavedDebt);
@@ -136,9 +136,9 @@ public class RepaymentRequestServiceTest {
         notSentRequest.setStatus(viewedStatus);
         final RepaymentRequest savedRequest = repaymentRequestRepository.save(notSentRequest);
 
-        final RepaymentRequest confirmedRequest = repaymentRequestService.confirmRepaymentRequestAndUpdateBalance(savedRequest.getId());
+        final RepaymentRequest acceptedRequest = repaymentRequestService.acceptRepaymentRequestAndUpdateBalance(savedRequest.getId());
 
-        assertEquals(CONFIRMED, confirmedRequest.getStatus().getName());
+        assertEquals(ACCEPTED, acceptedRequest.getStatus().getName());
 
         final Debt debt = debtService.getDebtWithUserAndCurrentUser(registeredTestUser2.getId());
 
@@ -146,7 +146,7 @@ public class RepaymentRequestServiceTest {
     }
 
     @Test
-    public void confirmRepaymentRequestAndUpdateBalance_When_ViewedRequestAndDebtExistWithCurrentUserBorrowerAndBalanceWillBeZero_Expected_DeleteDebt() {
+    public void acceptRepaymentRequestAndUpdateBalance_When_ViewedRequestAndDebtExistWithCurrentUserBorrowerAndBalanceWillBeZero_Expected_DeleteDebt() {
         testNotSavedDebt.setCreditor(registeredTestUser2);
         testNotSavedDebt.setBorrower(registeredTestUser1);
         testNotSavedDebt.setBalance(-5f);
@@ -160,9 +160,9 @@ public class RepaymentRequestServiceTest {
         notSentRequest.setStatus(viewedStatus);
         final RepaymentRequest savedRequest = repaymentRequestRepository.save(notSentRequest);
 
-        final RepaymentRequest confirmedRequest = repaymentRequestService.confirmRepaymentRequestAndUpdateBalance(savedRequest.getId());
+        final RepaymentRequest acceptedRequest = repaymentRequestService.acceptRepaymentRequestAndUpdateBalance(savedRequest.getId());
 
-        assertEquals(CONFIRMED, confirmedRequest.getStatus().getName());
+        assertEquals(ACCEPTED, acceptedRequest.getStatus().getName());
 
         assertThrows(ResourceNotFoundException.class,
                      () -> debtService.getDebtWithUserAndCurrentUser(registeredTestUser2.getId()));
@@ -180,9 +180,9 @@ public class RepaymentRequestServiceTest {
         notSentRequest.setStatus(viewedStatus);
         final RepaymentRequest savedRequest = repaymentRequestRepository.save(notSentRequest);
 
-        final RepaymentRequest confirmedRequest = repaymentRequestService.rejectRepaymentRequest(savedRequest.getId());
+        final RepaymentRequest acceptedRequest = repaymentRequestService.rejectRepaymentRequest(savedRequest.getId());
 
-        assertEquals(REJECTED, confirmedRequest.getStatus().getName());
+        assertEquals(REJECTED, acceptedRequest.getStatus().getName());
     }
 
 }

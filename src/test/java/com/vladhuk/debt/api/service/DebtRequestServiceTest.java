@@ -45,7 +45,7 @@ public class DebtRequestServiceTest {
     private User registeredTestUser2;
     private Status sentStatus;
     private Status viewedStatus;
-    private Status confirmedStatus;
+    private Status acceptedStatus;
     private Status rejectedStatus;
 
     @BeforeEach
@@ -57,7 +57,7 @@ public class DebtRequestServiceTest {
 
         sentStatus = statusService.getStatus(SENT);
         viewedStatus = statusService.getStatus(VIEWED);
-        confirmedStatus = statusService.getStatus(CONFIRMED);
+        acceptedStatus = statusService.getStatus(ACCEPTED);
         rejectedStatus = statusService.getStatus(REJECTED);
     }
 
@@ -67,7 +67,7 @@ public class DebtRequestServiceTest {
                 new Order(0f, sentStatus, registeredTestUser1),
                 new Order(0f, sentStatus, registeredTestUser1),
                 new Order(0f, viewedStatus, registeredTestUser1),
-                new Order(0f, confirmedStatus, registeredTestUser1),
+                new Order(0f, acceptedStatus, registeredTestUser1),
                 new Order(0f, rejectedStatus, registeredTestUser1)
         );
         final DebtRequest debtRequest = new DebtRequest();
@@ -79,7 +79,7 @@ public class DebtRequestServiceTest {
         assertEquals(VIEWED, actualOrders.get(0).getStatus().getName());
         assertEquals(VIEWED, actualOrders.get(1).getStatus().getName());
         assertEquals(VIEWED, actualOrders.get(2).getStatus().getName());
-        assertEquals(CONFIRMED, actualOrders.get(3).getStatus().getName());
+        assertEquals(ACCEPTED, actualOrders.get(3).getStatus().getName());
         assertEquals(REJECTED, actualOrders.get(4).getStatus().getName());
     }
 
@@ -110,38 +110,38 @@ public class DebtRequestServiceTest {
     }
 
     @Test
-    public void changeStatusToConfirmedIfAllOrdersConfirmed_When_AllConfirmed_Expected_RequestStatusConfirmed() {
+    public void changeStatusToAcceptedIfAllOrdersAccepted_When_AllAccepted_Expected_RequestStatusAccepted() {
         final List<Order> orders = Arrays.asList(
-                new Order(0f, confirmedStatus, registeredTestUser1),
-                new Order(0f, confirmedStatus, registeredTestUser1)
+                new Order(0f, acceptedStatus, registeredTestUser1),
+                new Order(0f, acceptedStatus, registeredTestUser1)
         );
         final DebtRequest debtRequest = new DebtRequest();
         debtRequest.setOrders(orders);
 
-        debtRequestService.changeStatusToConfirmedIfAllOrdersConfirmed(debtRequest);
+        debtRequestService.changeStatusToAcceptedIfAllOrdersAccepted(debtRequest);
 
-        assertEquals(CONFIRMED, debtRequest.getStatus().getName());
+        assertEquals(ACCEPTED, debtRequest.getStatus().getName());
     }
 
     @Test
-    public void changeStatusToConfirmedIfAllOrdersConfirmed_When_NotAllConfirmed_Expected_RequestStatusSent() {
+    public void changeStatusToAcceptedIfAllOrdersAccepted_When_NotAllAccepted_Expected_RequestStatusSent() {
         final List<Order> orders = Arrays.asList(
                 new Order(0f, sentStatus, registeredTestUser1),
                 new Order(0f, viewedStatus, registeredTestUser1),
-                new Order(0f, confirmedStatus, registeredTestUser1),
+                new Order(0f, acceptedStatus, registeredTestUser1),
                 new Order(0f, rejectedStatus, registeredTestUser1)
         );
         final DebtRequest debtRequest = new DebtRequest();
         debtRequest.setStatus(sentStatus);
         debtRequest.setOrders(orders);
 
-        debtRequestService.changeStatusToConfirmedIfAllOrdersConfirmed(debtRequest);
+        debtRequestService.changeStatusToAcceptedIfAllOrdersAccepted(debtRequest);
 
         assertEquals(SENT, debtRequest.getStatus().getName());
     }
 
     @Test
-    public void confirmDebtRequestAndUpdateBalance_When_AllConfirmedAndDebtNotExist_Expected_CreateDebt() {
+    public void acceptDebtRequestAndUpdateBalance_When_AllAcceptedAndDebtNotExist_Expected_CreateDebt() {
         friendService.createFriendship(registeredTestUser2.getId());
 
         final Order order = new Order(3f, viewedStatus, registeredTestUser1);
@@ -153,9 +153,9 @@ public class DebtRequestServiceTest {
         debtRequest.setOrders(new ArrayList<>(Collections.singletonList(order)));
 
         final DebtRequest savedDebtRequest = debtRequestRepository.save(debtRequest);
-        final DebtRequest confirmedRequest = debtRequestService.confirmDebtRequestAndUpdateBalance(savedDebtRequest.getId());
+        final DebtRequest acceptedRequest = debtRequestService.acceptDebtRequestAndUpdateBalance(savedDebtRequest.getId());
 
-        assertEquals(CONFIRMED, confirmedRequest.getStatus().getName());
+        assertEquals(ACCEPTED, acceptedRequest.getStatus().getName());
 
         final Debt debt = debtService.getDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId());
 
@@ -165,7 +165,7 @@ public class DebtRequestServiceTest {
     }
 
     @Test
-    public void confirmDebtRequestAndUpdateBalance_When_AllConfirmedAndDebtExist_Expected_AddToBalance() {
+    public void acceptDebtRequestAndUpdateBalance_When_AllAcceptedAndDebtExist_Expected_AddToBalance() {
         friendService.createFriendship(registeredTestUser2.getId());
 
         debtService.createDebt(new Debt(registeredTestUser2, registeredTestUser1, 5f));
@@ -179,9 +179,9 @@ public class DebtRequestServiceTest {
         debtRequest.setOrders(new ArrayList<>(Collections.singletonList(order)));
 
         final DebtRequest savedDebtRequest = debtRequestRepository.save(debtRequest);
-        final DebtRequest confirmedRequest = debtRequestService.confirmDebtRequestAndUpdateBalance(savedDebtRequest.getId());
+        final DebtRequest acceptedRequest = debtRequestService.acceptDebtRequestAndUpdateBalance(savedDebtRequest.getId());
 
-        assertEquals(CONFIRMED, confirmedRequest.getStatus().getName());
+        assertEquals(ACCEPTED, acceptedRequest.getStatus().getName());
 
         final Debt debt = debtService.getDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId());
 
@@ -191,7 +191,7 @@ public class DebtRequestServiceTest {
     }
 
     @Test
-    public void confirmDebtRequestAndUpdateBalance_When_AllConfirmedAndDebtExistAndCurrentUserBorrower_Expected_AddToBalance() {
+    public void acceptDebtRequestAndUpdateBalance_When_AllAcceptedAndDebtExistAndCurrentUserBorrower_Expected_AddToBalance() {
         friendService.createFriendship(registeredTestUser2.getId());
 
         debtService.createDebt(new Debt(registeredTestUser1, registeredTestUser2, 5f));
@@ -205,9 +205,9 @@ public class DebtRequestServiceTest {
         debtRequest.setOrders(new ArrayList<>(Collections.singletonList(order)));
 
         final DebtRequest savedDebtRequest = debtRequestRepository.save(debtRequest);
-        final DebtRequest confirmedRequest = debtRequestService.confirmDebtRequestAndUpdateBalance(savedDebtRequest.getId());
+        final DebtRequest acceptedRequest = debtRequestService.acceptDebtRequestAndUpdateBalance(savedDebtRequest.getId());
 
-        assertEquals(CONFIRMED, confirmedRequest.getStatus().getName());
+        assertEquals(ACCEPTED, acceptedRequest.getStatus().getName());
 
         final Debt debt = debtService.getDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId());
 
@@ -217,7 +217,7 @@ public class DebtRequestServiceTest {
     }
 
     @Test
-    public void confirmDebtRequestAndUpdateBalance_When_NotAllOrdersConfirmedAndDebtExist_Expected_NotAddToBalance() {
+    public void acceptDebtRequestAndUpdateBalance_When_NotAllOrdersAcceptedAndDebtExist_Expected_NotAddToBalance() {
         friendService.createFriendship(registeredTestUser2.getId());
 
         final Order order1 = new Order(3f, viewedStatus, registeredTestUser1);
@@ -231,9 +231,9 @@ public class DebtRequestServiceTest {
         debtRequest.setOrders(new ArrayList<>(Arrays.asList(order1, order2)));
 
         final DebtRequest savedDebtRequest = debtRequestRepository.save(debtRequest);
-        final DebtRequest confirmedRequest = debtRequestService.confirmDebtRequestAndUpdateBalance(savedDebtRequest.getId());
+        final DebtRequest acceptedRequest = debtRequestService.acceptDebtRequestAndUpdateBalance(savedDebtRequest.getId());
 
-        assertEquals(SENT, confirmedRequest.getStatus().getName());
+        assertEquals(SENT, acceptedRequest.getStatus().getName());
 
         assertThrows(ResourceNotFoundException.class, () -> debtService.getDebtWithUsers(registeredTestUser1.getId(), registeredTestUser2.getId()));
     }
@@ -249,9 +249,9 @@ public class DebtRequestServiceTest {
         debtRequest.setOrders(new ArrayList<>(Collections.singletonList(order)));
 
         final DebtRequest savedDebtRequest = debtRequestRepository.save(debtRequest);
-        final DebtRequest confirmedRequest = debtRequestService.rejectDebtRequest(savedDebtRequest.getId());
+        final DebtRequest acceptedRequest = debtRequestService.rejectDebtRequest(savedDebtRequest.getId());
 
-        assertEquals(REJECTED, confirmedRequest.getStatus().getName());
+        assertEquals(REJECTED, acceptedRequest.getStatus().getName());
     }
 
 }

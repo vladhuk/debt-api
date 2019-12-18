@@ -21,11 +21,11 @@ public interface RepaymentRequestService {
 
     Long countNewReceivedRepaymentRequests();
 
-    void deleteSentRepaymentRequestIfNotConfirmedOrRejected(Long requestId);
+    void deleteSentRepaymentRequestIfNotAcceptedOrRejected(Long requestId);
 
     RepaymentRequest sendRepaymentRequest(RepaymentRequest repaymentRequest);
 
-    RepaymentRequest confirmRepaymentRequestAndUpdateBalance(Long requestId);
+    RepaymentRequest acceptRepaymentRequestAndUpdateBalance(Long requestId);
 
     RepaymentRequest rejectRepaymentRequest(Long requestId);
 

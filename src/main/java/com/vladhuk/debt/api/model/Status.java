@@ -16,7 +16,7 @@ public class Status {
     private StatusName name;
 
     public enum StatusName {
-        SENT, VIEWED, REJECTED, CONFIRMED
+        SENT, VIEWED, REJECTED, ACCEPTED
     }
 
 }

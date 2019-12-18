@@ -101,16 +101,16 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
-    public void deleteSentFriendRequestIfNotConfirmedOrRejected(Long requestId) {
+    public void deleteSentFriendRequestIfNotAcceptedOrRejected(Long requestId) {
         final Long currentUserId = authenticationService.getCurrentUser().getId();
         final Optional<FriendRequest> friendRequest = friendRequestRepository.findByIdAndSenderId(requestId, currentUserId);
 
         logger.info("Deleting friend request with id {}", requestId);
 
-        if (friendRequest.isEmpty() || friendRequest.get().getStatus().getName() == CONFIRMED
+        if (friendRequest.isEmpty() || friendRequest.get().getStatus().getName() == ACCEPTED
                 || friendRequest.get().getStatus().getName() == REJECTED) {
-            logger.error("Not rejected or confirmed friend request with id {} and sender id {} not founded", requestId, currentUserId);
-            throw new ResourceNotFoundException("Not rejected or confirmed friend request", "id", requestId);
+            logger.error("Not rejected or accepted friend request with id {} and sender id {} not founded", requestId, currentUserId);
+            throw new ResourceNotFoundException("Not rejected or accepted friend request", "id", requestId);
         }
         friendRequestRepository.deleteById(requestId);
     }
@@ -156,21 +156,21 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
-    public FriendRequest confirmFriendRequestAndDeleteSameViewed(Long requestId) {
-        logger.info("Confirming friend request with id {}", requestId);
+    public FriendRequest acceptFriendRequestAndDeleteSameViewed(Long requestId) {
+        logger.info("Acceptance friend request with id {}", requestId);
 
         final FriendRequest friendRequest = getViewedReceivedFriendRequest(requestId);
-        friendRequest.setStatus(statusService.getStatus(CONFIRMED));
+        friendRequest.setStatus(statusService.getStatus(ACCEPTED));
 
         final FriendRequest savedFriendRequest = friendRequestRepository.save(friendRequest);
         final Long senderId = savedFriendRequest.getSender().getId();
         final Long receiverId = savedFriendRequest.getReceiver().getId();
 
-        deleteNotConfirmedAndNotRejectedFriendRequests(senderId, receiverId);
+        deleteNotAcceptedAndNotRejectedFriendRequests(senderId, receiverId);
 
         if (friendService.isFriend(senderId)) {
             friendRequestRepository.deleteById(savedFriendRequest.getId());
-            logger.error("Can not confirm friend request {}. User {} already have friendship with user {}", savedFriendRequest.getId(), senderId, receiverId);
+            logger.error("Can not accept friend request {}. User {} already have friendship with user {}", savedFriendRequest.getId(), senderId, receiverId);
             throw new FriendRequestException("Users " + senderId + " and " + receiverId + " already friends");
         }
 
@@ -179,7 +179,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         return savedFriendRequest;
     }
 
-    private void deleteNotConfirmedAndNotRejectedFriendRequests(Long senderId, Long receiverId) {
+    private void deleteNotAcceptedAndNotRejectedFriendRequests(Long senderId, Long receiverId) {
         friendRequestRepository.deleteAllBySenderIdAndReceiverIdAndStatusId(
                 senderId, receiverId, statusService.getStatus(VIEWED).getId()
         );

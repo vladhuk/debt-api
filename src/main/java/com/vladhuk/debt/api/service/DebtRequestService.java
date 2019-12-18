@@ -15,7 +15,7 @@ public interface DebtRequestService {
      */
     List<DebtRequest> changeOrderStatusToViewed(List<DebtRequest> requests);
 
-    void changeStatusToConfirmedIfAllOrdersConfirmed(DebtRequest debtRequest);
+    void changeStatusToAcceptedIfAllOrdersAccepted(DebtRequest debtRequest);
 
     List<DebtRequest> getAllReceivedDebtRequests();
 
@@ -23,11 +23,11 @@ public interface DebtRequestService {
 
     Long countNewReceivedDebtRequests();
 
-    void deleteSentDebtRequestIfNotConfirmedOrRejected(Long requestId);
+    void deleteSentDebtRequestIfNotAcceptedOrRejected(Long requestId);
 
     DebtRequest sendDebtRequest(DebtRequest debtRequest);
 
-    DebtRequest confirmDebtRequestAndUpdateBalance(Long requestId);
+    DebtRequest acceptDebtRequestAndUpdateBalance(Long requestId);
 
     DebtRequest rejectDebtRequest(Long requestId);
 

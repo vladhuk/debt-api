@@ -44,8 +44,8 @@ public class FriendRequestController {
     }
 
     @DeleteMapping("/sent/{id}")
-    public void deleteSentFriendRequestIfNotConfirmedOrRejected(@PathVariable Long id) {
-        friendRequestService.deleteSentFriendRequestIfNotConfirmedOrRejected(id);
+    public void deleteSentFriendRequestIfNotAcceptedOrRejected(@PathVariable Long id) {
+        friendRequestService.deleteSentFriendRequestIfNotAcceptedOrRejected(id);
     }
 
     @PostMapping
@@ -55,7 +55,7 @@ public class FriendRequestController {
 
     @PostMapping("/{requestId}/accept")
     public FriendRequest acceptFriendRequest(@PathVariable Long requestId) {
-        return friendRequestService.confirmFriendRequestAndDeleteSameViewed(requestId);
+        return friendRequestService.acceptFriendRequestAndDeleteSameViewed(requestId);
     }
 
     @PostMapping("/{requestId}/reject")

@@ -21,11 +21,11 @@ public interface FriendRequestService {
 
     Long countNewReceivedFriendRequests();
 
-    void deleteSentFriendRequestIfNotConfirmedOrRejected(Long requestId);
+    void deleteSentFriendRequestIfNotAcceptedOrRejected(Long requestId);
 
     FriendRequest sendFriendRequest(FriendRequest friendRequest);
 
-    FriendRequest confirmFriendRequestAndDeleteSameViewed(Long requestId);
+    FriendRequest acceptFriendRequestAndDeleteSameViewed(Long requestId);
 
     FriendRequest rejectFriendRequest(Long requestId);
 

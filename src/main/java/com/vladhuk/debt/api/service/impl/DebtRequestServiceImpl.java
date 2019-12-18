@@ -106,16 +106,16 @@ public class DebtRequestServiceImpl implements DebtRequestService {
     }
 
     @Override
-    public void deleteSentDebtRequestIfNotConfirmedOrRejected(Long requestId) {
+    public void deleteSentDebtRequestIfNotAcceptedOrRejected(Long requestId) {
         final Long currentUserId = authenticationService.getCurrentUser().getId();
         final Optional<DebtRequest> debtRequest = debtRequestRepository.findByIdAndSenderId(requestId, currentUserId);
 
         logger.info("Deleting debt request with id {}", requestId);
 
-        if (debtRequest.isEmpty() || debtRequest.get().getStatus().getName() == CONFIRMED
+        if (debtRequest.isEmpty() || debtRequest.get().getStatus().getName() == ACCEPTED
                 || debtRequest.get().getStatus().getName() == REJECTED) {
-            logger.error("Not rejected or confirmed debt request with id {} and sender id {} not founded", requestId, currentUserId);
-            throw new ResourceNotFoundException("Not rejected or confirmed debt request", "id", requestId);
+            logger.error("Not rejected or accepted debt request with id {} and sender id {} not founded", requestId, currentUserId);
+            throw new ResourceNotFoundException("Not rejected or accepted debt request", "id", requestId);
         }
         debtRequestRepository.deleteById(requestId);
     }
@@ -162,20 +162,20 @@ public class DebtRequestServiceImpl implements DebtRequestService {
     }
 
     @Override
-    public DebtRequest confirmDebtRequestAndUpdateBalance(Long requestId) {
-        logger.info("Confirming debt request with id {}", requestId);
+    public DebtRequest acceptDebtRequestAndUpdateBalance(Long requestId) {
+        logger.info("Acceptance debt request with id {}", requestId);
 
         final Order order = getViewedReceivedOrderByRequest(requestId);
 
-        order.setStatus(statusService.getStatus(CONFIRMED));
+        order.setStatus(statusService.getStatus(ACCEPTED));
         debtOrderRepository.save(order);
-        logger.info("Order with id {} is CONFIRMED", order.getId());
+        logger.info("Order with id {} is ACCEPTED", order.getId());
 
         final DebtRequest debtRequest = debtRequestRepository.findById(requestId).get();
 
-        changeStatusToConfirmedIfAllOrdersConfirmed(debtRequest);
+        changeStatusToAcceptedIfAllOrdersAccepted(debtRequest);
 
-        if (debtRequest.getStatus().getName() == CONFIRMED) {
+        if (debtRequest.getStatus().getName() == ACCEPTED) {
             addToBalances(debtRequest);
         }
 
@@ -183,14 +183,14 @@ public class DebtRequestServiceImpl implements DebtRequestService {
     }
 
     @Override
-    public void changeStatusToConfirmedIfAllOrdersConfirmed(DebtRequest debtRequest) {
+    public void changeStatusToAcceptedIfAllOrdersAccepted(DebtRequest debtRequest) {
         for (Order order : debtRequest.getOrders()) {
-            if (order.getStatus().getName() != CONFIRMED) {
+            if (order.getStatus().getName() != ACCEPTED) {
                 return;
             }
         }
-        debtRequest.setStatus(statusService.getStatus(CONFIRMED));
-        logger.info("Debt request with id {} is CONFIRMED", debtRequest.getId());
+        debtRequest.setStatus(statusService.getStatus(ACCEPTED));
+        logger.info("Debt request with id {} is ACCEPTED", debtRequest.getId());
     }
 
     private void addToBalances(DebtRequest debtRequest) {

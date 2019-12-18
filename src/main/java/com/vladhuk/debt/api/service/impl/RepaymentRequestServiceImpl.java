@@ -101,16 +101,16 @@ public class RepaymentRequestServiceImpl implements RepaymentRequestService {
     }
 
     @Override
-    public void deleteSentRepaymentRequestIfNotConfirmedOrRejected(Long requestId) {
+    public void deleteSentRepaymentRequestIfNotAcceptedOrRejected(Long requestId) {
         final Long currentUserId = authenticationService.getCurrentUser().getId();
         final Optional<RepaymentRequest> repaymentRequest = repaymentRequestRepository.findByIdAndSenderId(requestId, currentUserId);
 
         logger.info("Deleting repayment request with id {}", requestId);
 
-        if (repaymentRequest.isEmpty() || repaymentRequest.get().getStatus().getName() == CONFIRMED
+        if (repaymentRequest.isEmpty() || repaymentRequest.get().getStatus().getName() == ACCEPTED
                 || repaymentRequest.get().getStatus().getName() == REJECTED) {
-            logger.error("Not rejected or confirmed repayment request with id {} and sender id {} not founded", requestId, currentUserId);
-            throw new ResourceNotFoundException("Not rejected or confirmed repayment request", "id", requestId);
+            logger.error("Not rejected or accepted repayment request with id {} and sender id {} not founded", requestId, currentUserId);
+            throw new ResourceNotFoundException("Not rejected or accepted repayment request", "id", requestId);
         }
         repaymentRequestRepository.deleteById(requestId);
     }
@@ -156,13 +156,13 @@ public class RepaymentRequestServiceImpl implements RepaymentRequestService {
     }
 
     @Override
-    public RepaymentRequest confirmRepaymentRequestAndUpdateBalance(Long requestId) {
-        logger.info("Confirming repayment request with id {}", requestId);
+    public RepaymentRequest acceptRepaymentRequestAndUpdateBalance(Long requestId) {
+        logger.info("Acceptance repayment request with id {}", requestId);
 
         final RepaymentRequest request = getViewedRepaymentRequest(requestId);
 
 
-        request.setStatus(statusService.getStatus(CONFIRMED));
+        request.setStatus(statusService.getStatus(ACCEPTED));
 
         final Debt debt = debtService.getDebtWithUserAndCurrentUser(request.getSender().getId());
         final Float amount = Objects.equals(debt.getCreditor().getId(), request.getSender().getId())

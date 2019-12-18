@@ -44,8 +44,8 @@ public class DebtRequestController {
     }
 
     @DeleteMapping("/sent/{id}")
-    public void deleteSentDebtRequestIfNotConfirmedOrRejected(@PathVariable Long id) {
-        debtRequestService.deleteSentDebtRequestIfNotConfirmedOrRejected(id);
+    public void deleteSentDebtRequestIfNotAcceptedOrRejected(@PathVariable Long id) {
+        debtRequestService.deleteSentDebtRequestIfNotAcceptedOrRejected(id);
     }
 
     @PostMapping
@@ -55,7 +55,7 @@ public class DebtRequestController {
 
     @PostMapping("/{requestId}/accept")
     public DebtRequest acceptDebtRequest(@PathVariable Long requestId) {
-        return debtRequestService.confirmDebtRequestAndUpdateBalance(requestId);
+        return debtRequestService.acceptDebtRequestAndUpdateBalance(requestId);
     }
 
     @PostMapping("/{requestId}/reject")

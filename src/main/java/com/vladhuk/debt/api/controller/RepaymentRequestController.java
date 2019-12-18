@@ -44,8 +44,8 @@ public class RepaymentRequestController {
     }
 
     @DeleteMapping("/sent/{id}")
-    public void deleteSentRepaymentRequestIfNotConfirmedOrRejected(@PathVariable Long id) {
-        repaymentRequestService.deleteSentRepaymentRequestIfNotConfirmedOrRejected(id);
+    public void deleteSentRepaymentRequestIfNotAcceptedOrRejected(@PathVariable Long id) {
+        repaymentRequestService.deleteSentRepaymentRequestIfNotAcceptedOrRejected(id);
     }
 
     @PostMapping
@@ -55,7 +55,7 @@ public class RepaymentRequestController {
 
     @PostMapping("/{requestId}/accept")
     public RepaymentRequest acceptRepaymentRequest(@PathVariable Long requestId) {
-        return repaymentRequestService.confirmRepaymentRequestAndUpdateBalance(requestId);
+        return repaymentRequestService.acceptRepaymentRequestAndUpdateBalance(requestId);
     }
 
     @PostMapping("/{requestId}/reject")

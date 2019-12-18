@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.service;
 
+import com.vladhuk.debt.api.exception.UserNotFriendException;
 import com.vladhuk.debt.api.model.Group;
 import com.vladhuk.debt.api.model.User;
 import com.vladhuk.debt.api.repository.GroupRepository;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest
 @Transactional
@@ -31,6 +33,8 @@ public class GroupServiceTest {
     private GroupRepository groupRepository;
     @Autowired
     private AuthenticationService authenticationService;
+    @Autowired
+    private FriendService friendService;
 
     @BeforeEach
     private void setUp() {
@@ -108,7 +112,9 @@ public class GroupServiceTest {
     }
 
     @Test
-    public void addMember_When_CurrentUserOwnerAndGroupExistsAndNewMemberExists_Expected_GroupWithNewMember() {
+    public void addMember_When_CurrentUserOwnerAndGroupExistsAndNewMemberExistsAndNewMemberFriend_Expected_GroupWithNewMember() {
+        friendService.createFriendship(registeredTestUser2.getId());
+
         final Group group = groupService.createGroup(testGroup);
 
         final Group groupWithMember = groupService.addMember(group.getId(), registeredTestUser2);
@@ -119,7 +125,17 @@ public class GroupServiceTest {
     }
 
     @Test
+    public void addMember_When_CurrentUserOwnerAndGroupExistsAndNewMemberExistsAndNewMemberNotFriend_Expected_UserNotFriendException() {
+        final Group group = groupService.createGroup(testGroup);
+
+        assertThrows(UserNotFriendException.class,
+                     () -> groupService.addMember(group.getId(), registeredTestUser2));
+    }
+
+    @Test
     public void deleteMember_When_MemberExist_Expected_DeleteMember() {
+        friendService.createFriendship(registeredTestUser2.getId());
+
         Group group = groupService.createGroup(testGroup);
         group = groupService.addMember(group.getId(), registeredTestUser2);
 

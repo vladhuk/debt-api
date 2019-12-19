@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.service;
 
+import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.exception.UserNotFriendException;
 import com.vladhuk.debt.api.model.Group;
 import com.vladhuk.debt.api.model.User;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,7 +100,7 @@ public class GroupServiceTest {
     }
 
     @Test
-    public void createGroup_When_GroupNotExist_CreateGroup() {
+    public void createGroup_When_GroupNotExist_Expected_CreateGroup() {
         testGroup.setOwner(registeredTestUser1);
 
         final Group actualGroup = groupService.createGroup(testGroup);
@@ -109,6 +111,61 @@ public class GroupServiceTest {
 
         assertTrue(fetchedGroup.isPresent());
         assertEquals(actualGroup, fetchedGroup.get());
+    }
+
+    @Test
+    public void createGroup_When_MemberNotFriend_Expected_UserNotFriendException() {
+        testGroup.setOwner(registeredTestUser1);
+
+        testGroup.setMembers(Collections.singletonList(registeredTestUser2));
+        assertThrows(UserNotFriendException.class, () -> groupService.createGroup(testGroup));
+    }
+
+    @Test
+    public void updateGroup_When_NewMemberFriend_UpdateGroup() {
+        friendService.createFriendship(registeredTestUser2.getId());
+
+        testGroup.setOwner(registeredTestUser1);
+
+        final Group group = groupService.createGroup(testGroup);
+
+        final String newTitle = "New title";
+        final Group newGroup = new Group();
+        newGroup.setId(group.getId());
+        newGroup.setTitle(newTitle);
+        newGroup.setMembers(Collections.singletonList(registeredTestUser2));
+
+        final Group savedNewGroup = groupService.updateGroup(newGroup);
+
+        assertNotNull(savedNewGroup);
+        assertEquals(newTitle, savedNewGroup.getTitle());
+        assertEquals(Collections.singletonList(registeredTestUser2), savedNewGroup.getMembers());
+    }
+
+    @Test
+    public void updateGroup_When_NewMemberNotFriend_UserNotFriendException() {
+        testGroup.setOwner(registeredTestUser1);
+
+        final Group group = groupService.createGroup(testGroup);
+
+        final Group newGroup = new Group();
+        newGroup.setId(group.getId());
+        newGroup.setMembers(Collections.singletonList(registeredTestUser2));
+
+        assertThrows(UserNotFriendException.class, () -> groupService.updateGroup(newGroup));
+    }
+
+    @Test
+    public void updateGroup_When_IdNotExist_ResourceNotFoundException() {
+        testGroup.setOwner(registeredTestUser1);
+
+        groupService.createGroup(testGroup);
+
+        final Group newGroup = new Group();
+        newGroup.setId(-1L);
+        newGroup.setMembers(Collections.singletonList(registeredTestUser2));
+
+        assertThrows(ResourceNotFoundException.class, () -> groupService.updateGroup(newGroup));
     }
 
     @Test

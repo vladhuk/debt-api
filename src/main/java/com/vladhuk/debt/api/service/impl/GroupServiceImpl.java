@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -70,7 +71,27 @@ public class GroupServiceImpl implements GroupService {
     public Group createGroup(Group group) {
         group.setOwner(authenticationService.getCurrentUser());
         logger.info("Creating group: {}", group);
+
+        validateMembers(group);
+
         return groupRepository.save(group);
+    }
+
+    private void validateMembers(Group group) {
+        final List<User> newMemberList = new ArrayList<>();
+
+        for (User member : group.getMembers()) {
+            final User fetchedMember = userService.getUser(member);
+
+            if (!friendService.isFriend(fetchedMember.getId())) {
+                logger.error("Can not add user with id {} to group, because he is not friend", fetchedMember.getId());
+                throw new UserNotFriendException("User with id " + fetchedMember.getId() + " is not friend");
+            }
+
+            newMemberList.add(fetchedMember);
+        }
+
+        group.setMembers(newMemberList);
     }
 
     @Override
@@ -82,14 +103,28 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group updateGroup(Group group) {
+        final Optional<Group> optionalGroup = groupRepository.findById(group.getId());
+
+        if (optionalGroup.isEmpty()) {
+            logger.error("Group with id {} does not exist", group.getId());
+            throw new ResourceNotFoundException("Group", "id", group.getId());
+        }
+
+        final Group fetchedGroup = optionalGroup.get();
+
+        logger.info("Updating group with id {}", group.getId());
+
         final User currentUser = authenticationService.getCurrentUser();
 
-        logger.info("Updating group with id {} with owner {}", group.getId(), currentUser.getId());
-
-        if (!Objects.equals(group.getOwner(), currentUser)) {
+        if (!Objects.equals(fetchedGroup.getOwner(), currentUser)) {
             logger.error("Current user with id {} does not have a group with id {}", currentUser.getId(), group.getId());
-            throw new ResourceNotFoundException("User", "group id", group.getId());
+            throw new ResourceNotFoundException("User", "id", group.getId());
         }
+
+        if (!Objects.equals(fetchedGroup.getMembers(), group.getMembers())) {
+            validateMembers(group);
+        }
+
         return groupRepository.save(group);
     }
 

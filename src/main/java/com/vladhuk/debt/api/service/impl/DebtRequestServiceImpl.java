@@ -1,7 +1,7 @@
 package com.vladhuk.debt.api.service.impl;
 
-import com.vladhuk.debt.api.exception.DebtRequestException;
 import com.vladhuk.debt.api.exception.ResourceNotFoundException;
+import com.vladhuk.debt.api.exception.UserNotFriendException;
 import com.vladhuk.debt.api.model.*;
 import com.vladhuk.debt.api.repository.DebtOrderRepository;
 import com.vladhuk.debt.api.repository.DebtRequestRepository;
@@ -132,7 +132,7 @@ public class DebtRequestServiceImpl implements DebtRequestService {
                 .map(order -> {
                     if (!friendService.isFriend(order.getReceiver().getId())) {
                         logger.error("User {} can not send debt request to user with id {}, because they are not friends", currentUser.getId(), order.getReceiver().getId());
-                        throw new DebtRequestException("Can not send request because users are not friends");
+                        throw new UserNotFriendException("Can not send request because users are not friends");
                     }
                     return new Order(order.getAmount(), sentStatus, userService.getUser(order.getReceiver()));
                 })

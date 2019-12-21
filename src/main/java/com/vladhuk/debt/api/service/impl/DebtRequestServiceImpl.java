@@ -66,6 +66,8 @@ public class DebtRequestServiceImpl implements DebtRequestService {
 
     @Override
     public List<DebtRequest> changeOrderStatusToViewed(List<DebtRequest> requests) {
+        // TODO: Add current user id to parameters and improve tests
+        final Long currentUserId = authenticationService.getCurrentUser().getId();
         final Status viewedStatus = statusService.getStatus(VIEWED);
 
         requests.forEach(request ->
@@ -73,8 +75,10 @@ public class DebtRequestServiceImpl implements DebtRequestService {
                         .stream()
                         .filter(order -> order.getStatus().getName() == SENT)
                         .forEach(order -> {
-                            order.setStatus(viewedStatus);
-                            debtOrderRepository.save(order);
+                            if (order.getReceiver().getId().equals(currentUserId)) {
+                                order.setStatus(viewedStatus);
+                                debtOrderRepository.save(order);
+                            }
                         })
         );
         return requests;

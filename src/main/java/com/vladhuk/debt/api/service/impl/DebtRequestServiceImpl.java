@@ -34,8 +34,9 @@ public class DebtRequestServiceImpl implements DebtRequestService {
     private final UserService userService;
     private final FriendService friendService;
     private final DebtService debtService;
+    private final RepaymentRequestService repaymentRequestService;
 
-    public DebtRequestServiceImpl(DebtRequestRepository debtRequestRepository, DebtOrderRepository debtOrderRepository, AuthenticationService authenticationService, StatusService statusService, UserService userService, FriendService friendService, DebtService debtService) {
+    public DebtRequestServiceImpl(DebtRequestRepository debtRequestRepository, DebtOrderRepository debtOrderRepository, AuthenticationService authenticationService, StatusService statusService, UserService userService, FriendService friendService, DebtService debtService, RepaymentRequestService repaymentRequestService) {
         this.debtRequestRepository = debtRequestRepository;
         this.debtOrderRepository = debtOrderRepository;
         this.authenticationService = authenticationService;
@@ -43,6 +44,7 @@ public class DebtRequestServiceImpl implements DebtRequestService {
         this.userService = userService;
         this.friendService = friendService;
         this.debtService = debtService;
+        this.repaymentRequestService = repaymentRequestService;
     }
 
     @Override
@@ -209,6 +211,9 @@ public class DebtRequestServiceImpl implements DebtRequestService {
                 debtService.addToBalance(debt.getId(), amount);
                 if (debtService.isBalanceZero(debt)) {
                     debtService.deleteDebt(debt.getId());
+                    repaymentRequestService.rejectRepaymentRequestsWithUsersIfStatusSentOrViewed(
+                            sender.getId(), receiver.getId()
+                    );
                 }
             }
         }

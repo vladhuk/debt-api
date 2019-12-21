@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.vladhuk.debt.api.model.Status.StatusName.*;
 
@@ -161,7 +163,6 @@ public class RepaymentRequestServiceImpl implements RepaymentRequestService {
 
         final RepaymentRequest request = getViewedRepaymentRequest(requestId);
 
-
         request.setStatus(statusService.getStatus(ACCEPTED));
 
         final Debt debt = debtService.getDebtWithUserAndCurrentUser(request.getSender().getId());
@@ -172,6 +173,9 @@ public class RepaymentRequestServiceImpl implements RepaymentRequestService {
 
         if (debtService.isBalanceZero(debt)) {
             debtService.deleteDebt(debt.getId());
+            final RepaymentRequest acceptedRequest = repaymentRequestRepository.save(request);
+            rejectRepaymentRequestsWithUsersIfStatusSentOrViewed(debt.getCreditor().getId(), debt.getBorrower().getId());
+            return acceptedRequest;
         }
 
         return repaymentRequestRepository.save(request);
@@ -188,4 +192,33 @@ public class RepaymentRequestServiceImpl implements RepaymentRequestService {
 
         return repaymentRequestRepository.save(request);
     }
+
+    @Override
+    public List<RepaymentRequest> rejectRepaymentRequestsWithUsersIfStatusSentOrViewed(Long firstUserId, Long secondUserId) {
+        final Long sentStatusId = statusService.getStatus(SENT).getId();
+        final Long viewedStatusId = statusService.getStatus(VIEWED).getId();
+        final Status rejectedStatus = statusService.getStatus(REJECTED);
+
+        return Stream.of(
+                repaymentRequestRepository.findAllBySenderIdAndOrderReceiverIdAndStatusId(
+                        firstUserId, secondUserId, sentStatusId
+                ),
+                repaymentRequestRepository.findAllBySenderIdAndOrderReceiverIdAndStatusId(
+                        secondUserId, firstUserId, sentStatusId
+                ),
+                repaymentRequestRepository.findAllBySenderIdAndOrderReceiverIdAndStatusId(
+                        firstUserId, secondUserId, viewedStatusId
+                ),
+                repaymentRequestRepository.findAllBySenderIdAndOrderReceiverIdAndStatusId(
+                        secondUserId, firstUserId, viewedStatusId
+                )
+        )
+                .flatMap(List::stream)
+                .map(request -> {
+                    request.setStatus(rejectedStatus);
+                    return repaymentRequestRepository.save(request);
+                })
+                .collect(Collectors.toList());
+    }
+
 }

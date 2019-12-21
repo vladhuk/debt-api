@@ -29,4 +29,6 @@ public interface RepaymentRequestService {
 
     RepaymentRequest rejectRepaymentRequest(Long requestId);
 
+    List<RepaymentRequest> rejectRepaymentRequestsWithUsersIfStatusSentOrViewed(Long firstUserId, Long secondUserId);
+
 }

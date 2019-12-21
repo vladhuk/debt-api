@@ -140,6 +140,8 @@ public class DebtRequestServiceImpl implements DebtRequestService {
                 })
                 .collect(Collectors.toList());
 
+        debtOrderRepository.saveAll(orders);
+
         final DebtRequest requestForSave = new DebtRequest();
         requestForSave.setSender(currentUser);
         requestForSave.setOrders(orders);

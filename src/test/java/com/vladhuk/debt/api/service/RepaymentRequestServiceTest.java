@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.vladhuk.debt.api.model.Status.StatusName.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -146,6 +148,37 @@ public class RepaymentRequestServiceTest {
     }
 
     @Test
+    public void acceptRepaymentRequestAndUpdateBalance_When_TwoViewedRequestAndDebtExistWithCurrentUserBorrowerAndDebtBalanceWillZero_Expected_MinusDebtBalanceAndRejectSecondRequest() {
+        testNotSavedDebt.setCreditor(registeredTestUser2);
+        testNotSavedDebt.setBorrower(registeredTestUser1);
+        debtService.createDebt(testNotSavedDebt);
+
+        final RepaymentRequest notSentRequest1 = new RepaymentRequest();
+        notSentRequest1.setOrder(
+                repaymentOrderRepository.save(new Order(-5f, sentStatus, registeredTestUser1))
+        );
+        notSentRequest1.setSender(registeredTestUser2);
+        notSentRequest1.setStatus(viewedStatus);
+        final RepaymentRequest savedRequest1 = repaymentRequestRepository.save(notSentRequest1);
+
+        final RepaymentRequest notSentRequest2 = new RepaymentRequest();
+        notSentRequest2.setOrder(
+                repaymentOrderRepository.save(new Order(-5f, sentStatus, registeredTestUser1))
+        );
+        notSentRequest2.setSender(registeredTestUser2);
+        notSentRequest2.setStatus(viewedStatus);
+        final RepaymentRequest savedRequest2 = repaymentRequestRepository.save(notSentRequest2);
+
+        final RepaymentRequest acceptedRequest = repaymentRequestService.acceptRepaymentRequestAndUpdateBalance(savedRequest1.getId());
+
+        assertEquals(ACCEPTED, acceptedRequest.getStatus().getName());
+
+        assertThrows(ResourceNotFoundException.class, () -> debtService.getDebtWithUserAndCurrentUser(registeredTestUser2.getId()));
+
+        assertEquals(REJECTED, savedRequest2.getStatus().getName());
+    }
+
+    @Test
     public void acceptRepaymentRequestAndUpdateBalance_When_ViewedRequestAndDebtExistWithCurrentUserBorrowerAndBalanceWillBeZero_Expected_DeleteDebt() {
         testNotSavedDebt.setCreditor(registeredTestUser2);
         testNotSavedDebt.setBorrower(registeredTestUser1);
@@ -183,6 +216,36 @@ public class RepaymentRequestServiceTest {
         final RepaymentRequest acceptedRequest = repaymentRequestService.rejectRepaymentRequest(savedRequest.getId());
 
         assertEquals(REJECTED, acceptedRequest.getStatus().getName());
+    }
+
+    @Test
+    public void rejectRepaymentRequestsWithUsersIfStatusSentOrViewed_When_ExistsViewedRequests_Expected_CorrectRejecting() {
+        final RepaymentRequest request1 = new RepaymentRequest();
+        request1.setOrder(
+                repaymentOrderRepository.save(new Order(-5f, sentStatus, registeredTestUser1))
+        );
+        request1.setSender(registeredTestUser2);
+        request1.setStatus(viewedStatus);
+        repaymentRequestRepository.save(request1);
+        final RepaymentRequest savedRequest1 = repaymentRequestRepository.save(request1);
+
+        final RepaymentRequest request2 = new RepaymentRequest();
+        request2.setOrder(
+                repaymentOrderRepository.save(new Order(-5f, sentStatus, registeredTestUser1))
+        );
+        request2.setSender(registeredTestUser2);
+        request2.setStatus(acceptedStatus);
+        repaymentRequestRepository.save(request2);
+        final RepaymentRequest savedRequest2 = repaymentRequestRepository.save(request2);
+
+
+        final List<RepaymentRequest> repaymentRequests = repaymentRequestService.rejectRepaymentRequestsWithUsersIfStatusSentOrViewed(
+                registeredTestUser1.getId(), registeredTestUser2.getId()
+        );
+        assertEquals(1, repaymentRequests.size());
+
+        assertEquals(REJECTED, savedRequest1.getStatus().getName());
+        assertEquals(ACCEPTED, savedRequest2.getStatus().getName());
     }
 
 }

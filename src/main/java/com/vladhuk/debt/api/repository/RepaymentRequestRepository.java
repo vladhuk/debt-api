@@ -15,6 +15,8 @@ public interface RepaymentRequestRepository extends PagingAndSortingRepository<R
 
     List<RepaymentRequest> findAllBySenderId(Long senderId);
 
+    List<RepaymentRequest> findAllBySenderIdAndOrderReceiverIdAndStatusId(Long senderId, Long receiverId, Long statusId);
+
     List<RepaymentRequest> findAllBySenderId(Long senderId, Pageable pageable);
 
     Optional<RepaymentRequest> findByIdAndSenderId(Long id, Long senderId);

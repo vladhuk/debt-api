@@ -44,8 +44,8 @@ public class DebtRequestController {
     }
 
     @DeleteMapping("/sent/{id}")
-    public void deleteSentDebtRequestIfNotAcceptedOrRejected(@PathVariable Long id) {
-        debtRequestService.deleteSentDebtRequestIfNotAcceptedOrRejected(id);
+    public void deleteSentDebtRequestIfNoAcceptedOrRejectedOrders(@PathVariable Long id) {
+        debtRequestService.deleteSentDebtRequestIfNoAcceptedOrRejectedOrders(id);
     }
 
     @PostMapping

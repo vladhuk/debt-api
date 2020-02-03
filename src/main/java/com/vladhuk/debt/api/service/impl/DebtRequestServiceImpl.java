@@ -112,18 +112,23 @@ public class DebtRequestServiceImpl implements DebtRequestService {
     }
 
     @Override
-    public void deleteSentDebtRequestIfNotAcceptedOrRejected(Long requestId) {
+    public void deleteSentDebtRequestIfNoAcceptedOrRejectedOrders(Long requestId) {
         final Long currentUserId = authenticationService.getCurrentUser().getId();
         final Optional<DebtRequest> debtRequest = debtRequestRepository.findByIdAndSenderId(requestId, currentUserId);
 
         logger.info("Deleting debt request with id {}", requestId);
 
-        if (debtRequest.isEmpty() || debtRequest.get().getStatus().getName() == ACCEPTED
-                || debtRequest.get().getStatus().getName() == REJECTED) {
-            logger.error("Not rejected or accepted debt request with id {} and sender id {} not founded", requestId, currentUserId);
-            throw new ResourceNotFoundException("Not rejected or accepted debt request", "id", requestId);
+        if (debtRequest.isEmpty() || existsAcceptedOrRejectedOrders(debtRequest.get())) {
+            logger.error("Not rejected or accepted orders in debt request with id {} and sender id {} not founded", requestId, currentUserId);
+            throw new ResourceNotFoundException("Not rejected or accepted orders in debt request", "id", requestId);
         }
         debtRequestRepository.deleteById(requestId);
+    }
+
+    private boolean existsAcceptedOrRejectedOrders(DebtRequest debtRequest) {
+        return debtRequest.getOrders().stream()
+                .map(order -> order.getStatus().getName())
+                .anyMatch(statusName -> statusName == ACCEPTED || statusName == REJECTED);
     }
 
     @Override

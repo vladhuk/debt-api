@@ -84,6 +84,46 @@ public class DebtRequestServiceTest {
     }
 
     @Test
+    public void deleteSentDebtRequestIfNoAcceptedOrRejectedOrders_When_ExistsAcceptedOrder_Expected_ResourceNotFoundException() {
+        friendService.createFriendship(registeredTestUser2.getId());
+
+        final List<Order> orders = Arrays.asList(
+                new Order(0f, sentStatus, registeredTestUser2),
+                new Order(0f, viewedStatus, registeredTestUser2),
+                new Order(0f, acceptedStatus, registeredTestUser2)
+        );
+        final DebtRequest debtRequest = new DebtRequest();
+        debtRequest.setSender(registeredTestUser1);
+        debtRequest.setOrders(orders);
+        debtOrderRepository.saveAll(orders);
+
+        final DebtRequest savedDebtRequest = debtRequestRepository.save(debtRequest);
+
+        assertThrows(ResourceNotFoundException.class,
+                     () -> debtRequestService.deleteSentDebtRequestIfNoAcceptedOrRejectedOrders(savedDebtRequest.getId()));
+    }
+
+    @Test
+    public void deleteSentDebtRequestIfNoAcceptedOrRejectedOrders_When_NoAcceptedOrRejectedOrders_Expected_DeleteDebtRequest() {
+        friendService.createFriendship(registeredTestUser2.getId());
+
+        final List<Order> orders = Arrays.asList(
+                new Order(0f, sentStatus, registeredTestUser2),
+                new Order(0f, viewedStatus, registeredTestUser2)
+        );
+        final DebtRequest debtRequest = new DebtRequest();
+        debtRequest.setSender(registeredTestUser1);
+        debtRequest.setOrders(orders);
+        debtOrderRepository.saveAll(orders);
+
+        final DebtRequest savedDebtRequest = debtRequestRepository.save(debtRequest);
+
+        debtRequestService.deleteSentDebtRequestIfNoAcceptedOrRejectedOrders(savedDebtRequest.getId());
+
+        assertEquals(0, debtRequestService.getAllSentDebtRequests().size());
+    }
+
+    @Test
     public void sendDebtRequest_When_UserFriend_Expected_Request() {
         friendService.createFriendship(registeredTestUser2.getId());
 

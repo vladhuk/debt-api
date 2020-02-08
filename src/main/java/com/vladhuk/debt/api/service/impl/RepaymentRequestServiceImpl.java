@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.service.impl;
 
+import com.vladhuk.debt.api.exception.NoOrdersException;
 import com.vladhuk.debt.api.exception.RepaymentRequestException;
 import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.model.*;
@@ -119,6 +120,12 @@ public class RepaymentRequestServiceImpl implements RepaymentRequestService {
 
     @Override
     public RepaymentRequest sendRepaymentRequest(RepaymentRequest repaymentRequest) {
+
+        if (repaymentRequest.getOrder() == null) {
+            logger.error("Can not create debt request without order");
+            throw new NoOrdersException("Can not create debt request without order");
+        }
+
         final User currentUser = authenticationService.getCurrentUser();
         final User receiver = userService.getUser(repaymentRequest.getOrder().getReceiver());
 

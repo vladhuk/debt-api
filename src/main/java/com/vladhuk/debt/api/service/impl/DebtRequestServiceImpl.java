@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.service.impl;
 
+import com.vladhuk.debt.api.exception.NoOrdersException;
 import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.exception.UserNotFriendException;
 import com.vladhuk.debt.api.model.*;
@@ -133,6 +134,12 @@ public class DebtRequestServiceImpl implements DebtRequestService {
 
     @Override
     public DebtRequest sendDebtRequest(DebtRequest debtRequest) {
+
+        if (debtRequest.getOrders().isEmpty()) {
+            logger.error("Can not create debt request without orders");
+            throw new NoOrdersException("Can not create debt request without orders");
+        }
+
         final User currentUser = authenticationService.getCurrentUser();
 
         logger.info("Sending debt request from user {} to users {}", currentUser.getId(), debtRequest.getOrders().stream().map(order -> order.getReceiver().getId()).collect(Collectors.toList()));

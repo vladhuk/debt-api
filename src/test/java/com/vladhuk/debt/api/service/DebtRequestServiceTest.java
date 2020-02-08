@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.service;
 
+import com.vladhuk.debt.api.exception.NoOrdersException;
 import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.exception.UserNotFriendException;
 import com.vladhuk.debt.api.model.*;
@@ -147,6 +148,15 @@ public class DebtRequestServiceTest {
         debtRequest.setOrders(Collections.singletonList(new Order(0f, sentStatus, registeredTestUser2)));
 
         assertThrows(UserNotFriendException.class, () -> debtRequestService.sendDebtRequest(debtRequest));
+    }
+
+    @Test
+    public void sendDebtRequest_When_NoOrders_Expected_NoOrdersException() {
+        final DebtRequest debtRequest = new DebtRequest();
+        debtRequest.setSender(registeredTestUser1);
+        debtRequest.setOrders(Collections.emptyList());
+
+        assertThrows(NoOrdersException.class, () -> debtRequestService.sendDebtRequest(debtRequest));
     }
 
     @Test

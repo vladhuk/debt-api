@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.service;
 
+import com.vladhuk.debt.api.exception.NoOrdersException;
 import com.vladhuk.debt.api.exception.RepaymentRequestException;
 import com.vladhuk.debt.api.exception.ResourceNotFoundException;
 import com.vladhuk.debt.api.model.*;
@@ -74,6 +75,19 @@ public class RepaymentRequestServiceTest {
         assertEquals(registeredTestUser2, sentRepaymentRequest.getOrder().getReceiver());
         assertEquals(sentStatus, sentRepaymentRequest.getStatus());
         assertEquals(5f, sentRepaymentRequest.getOrder().getAmount());
+    }
+
+    @Test
+    public void sendRepaymentRequest_When_OrderIsNull_Expected_NoOrdersException() {
+        debtService.createDebt(testNotSavedDebt);
+
+        final RepaymentRequest notSentRepaymentRequest = new RepaymentRequest();
+        notSentRepaymentRequest.setOrder(null);
+        notSentRepaymentRequest.setSender(registeredTestUser1);
+        notSentRepaymentRequest.setStatus(sentStatus);
+
+        assertThrows(NoOrdersException.class,
+                     () -> repaymentRequestService.sendRepaymentRequest(notSentRepaymentRequest));
     }
 
     @Test

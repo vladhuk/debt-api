@@ -121,6 +121,8 @@ public class GroupServiceImpl implements GroupService {
             throw new ResourceNotFoundException("User", "id", group.getId());
         }
 
+        group.setOwner(currentUser);
+
         if (!Objects.equals(fetchedGroup.getMembers(), group.getMembers())) {
             validateMembers(group);
         }

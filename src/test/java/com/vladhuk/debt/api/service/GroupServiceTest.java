@@ -138,6 +138,7 @@ public class GroupServiceTest {
         final Group savedNewGroup = groupService.updateGroup(newGroup);
 
         assertNotNull(savedNewGroup);
+        assertEquals(registeredTestUser1, savedNewGroup.getOwner());
         assertEquals(newTitle, savedNewGroup.getTitle());
         assertEquals(Collections.singletonList(registeredTestUser2), savedNewGroup.getMembers());
     }

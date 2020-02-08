@@ -19,7 +19,7 @@ public class Group {
     @ManyToOne
     private User owner;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(name = "groups_members",
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))

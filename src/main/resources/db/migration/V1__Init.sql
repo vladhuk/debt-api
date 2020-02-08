@@ -59,8 +59,6 @@ create table groups_members
 (
 	group_id bigint not null,
 	user_id bigint not null,
-	constraint UK_pynnby7lrxo096mdm1t0okmdo
-		unique (user_id),
 	constraint FK4cc1uaype9m8649rrnlxrnqoc
 		foreign key (user_id) references users (id),
 	constraint FK5de7dqov8agkuq98cmwg811e0

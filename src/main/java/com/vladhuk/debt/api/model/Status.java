@@ -1,5 +1,6 @@
 package com.vladhuk.debt.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 public class Status {
 
     @Id
+    @JsonIgnore
     private Long id;
 
     @Enumerated(value = EnumType.STRING)

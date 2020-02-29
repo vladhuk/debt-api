@@ -53,12 +53,12 @@ public class DebtRequestController {
         return debtRequestService.sendDebtRequest(debtRequest);
     }
 
-    @PostMapping("/{requestId}/accept")
+    @PutMapping("/{requestId}/accept")
     public DebtRequest acceptDebtRequest(@PathVariable Long requestId) {
         return debtRequestService.acceptDebtRequestAndUpdateBalance(requestId);
     }
 
-    @PostMapping("/{requestId}/reject")
+    @PutMapping("/{requestId}/reject")
     public DebtRequest rejectDebtRequest(@PathVariable Long requestId) {
         return debtRequestService.rejectDebtRequest(requestId);
     }

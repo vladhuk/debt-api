@@ -53,12 +53,12 @@ public class RepaymentRequestController {
         return repaymentRequestService.sendRepaymentRequest(repaymentRequest);
     }
 
-    @PostMapping("/{requestId}/accept")
+    @PutMapping("/{requestId}/accept")
     public RepaymentRequest acceptRepaymentRequest(@PathVariable Long requestId) {
         return repaymentRequestService.acceptRepaymentRequestAndUpdateBalance(requestId);
     }
 
-    @PostMapping("/{requestId}/reject")
+    @PutMapping("/{requestId}/reject")
     public RepaymentRequest rejectRepaymentRequest(@PathVariable Long requestId) {
         return repaymentRequestService.rejectRepaymentRequest(requestId);
     }

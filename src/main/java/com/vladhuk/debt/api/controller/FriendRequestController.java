@@ -53,12 +53,12 @@ public class FriendRequestController {
         return friendRequestService.sendFriendRequest(friendRequest);
     }
 
-    @PostMapping("/{requestId}/accept")
+    @PutMapping("/{requestId}/accept")
     public FriendRequest acceptFriendRequest(@PathVariable Long requestId) {
         return friendRequestService.acceptFriendRequestAndDeleteSameViewed(requestId);
     }
 
-    @PostMapping("/{requestId}/reject")
+    @PutMapping("/{requestId}/reject")
     public FriendRequest rejectFriendRequest(@PathVariable Long requestId) {
         return friendRequestService.rejectFriendRequest(requestId);
     }

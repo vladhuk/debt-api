@@ -1,11 +1,13 @@
 # Stage 1: Building war file
-FROM openjdk:11 AS BUILD
+FROM openjdk:11 AS build
 
-ARG APP_HOME=/usr/src/app
+WORKDIR /usr/src/app
 
-RUN mkdir ${APP_HOME}
-WORKDIR ${APP_HOME}
-
+# Build without source code to use docker caching for dependencies
+COPY build.gradle settings.gradle gradlew ./
+COPY gradle ./gradle
+RUN ./gradlew build || return 0
+# Build with source code
 COPY . .
 RUN ./gradlew build -x test
 
@@ -13,13 +15,11 @@ RUN ./gradlew build -x test
 FROM openjdk:11
 
 ARG APP_HOME=/usr/src/app
-ARG APP_NAME=app.war
 
-RUN mkdir ${APP_HOME}
 WORKDIR ${APP_HOME}
 
-COPY --from=BUILD ${APP_HOME}/build/libs/*.war ${APP_HOME}/${APP_NAME}
+COPY --from=build ${APP_HOME}/build/libs/*.war app.war
 
 EXPOSE 8080
 
-ENTRYPOINT [ "java", "-jar", "app.war" ]
+CMD [ "java", "-jar", "app.war" ]
